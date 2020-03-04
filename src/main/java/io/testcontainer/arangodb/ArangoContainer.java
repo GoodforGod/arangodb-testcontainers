@@ -12,7 +12,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
  * @author Anton Kurako (GoodforGod)
  * @since 2.3.2020
  */
-public class ArangoDBContainer<SELF extends ArangoDBContainer<SELF>> extends GenericContainer<SELF> {
+public class ArangoContainer<SELF extends ArangoContainer<SELF>> extends GenericContainer<SELF> {
 
     private static final String IMAGE = "arangodb";
     private static final String LATEST_VERSION = "latest";
@@ -30,11 +30,11 @@ public class ArangoDBContainer<SELF extends ArangoDBContainer<SELF>> extends Gen
     private String password;
     private int port = PORT_DEFAULT;
 
-    public ArangoDBContainer() {
+    public ArangoContainer() {
         this(LATEST_VERSION);
     }
 
-    private ArangoDBContainer(String version) {
+    private ArangoContainer(String version) {
         super(IMAGE + ":" + version);
     }
 
@@ -90,11 +90,11 @@ public class ArangoDBContainer<SELF extends ArangoDBContainer<SELF>> extends Gen
         return password;
     }
 
-    public Integer getPort() {
-        return PORT_DEFAULT;
+    public int getPort() {
+        return port;
     }
 
-    public ArangoDBContainer<SELF> setPort(int port) {
+    public ArangoContainer<SELF> setPort(int port) {
         this.port = port;
         return self();
     }
