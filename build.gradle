@@ -70,7 +70,7 @@ sonarqube {
     properties {
         property 'sonar.host.url', 'https://sonarcloud.io'
         property 'sonar.organization', 'goodforgod'
-        property 'sonar.projectKey', 'GoodforGod_arangodb_testcontainer'
+        property 'sonar.projectKey', 'GoodforGod_arangodb-testcontainer'
     }
 }
 
