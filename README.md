@@ -23,8 +23,8 @@ dependencies {
 
 ## Usage
 
-Check [this]() TestContainer tutorial for **JUnit 4** examples.
-Or check [this]() TestContainers tutorials for **JUnit 5** examples;
+Check [this](https://www.testcontainers.org/test_framework_integration/junit_5/) TestContainers tutorials for **Jupiter / JUnit 5** examples
+or [this](https://www.testcontainers.org/quickstart/junit_4_quickstart/) TestContainers tutorials for **JUnit 4** examples.
 
 Run ArangoDB container *without* authentication.
 ```java
