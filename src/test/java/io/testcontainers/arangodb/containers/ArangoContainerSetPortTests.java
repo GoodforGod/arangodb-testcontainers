@@ -1,4 +1,4 @@
-package io.testcontainer.arangodb;
+package io.testcontainers.arangodb.containers;
 
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Container;

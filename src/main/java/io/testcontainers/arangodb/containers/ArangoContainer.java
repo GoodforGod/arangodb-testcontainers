@@ -1,4 +1,4 @@
-package io.testcontainer.arangodb;
+package io.testcontainers.arangodb.containers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,7 +7,7 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
 /**
- * ArangoDB TestContainer docker container implementation.
+ * ArangoDB TestContainer docker container implementation. Uses Log4j as logger for container output.
  *
  * @author Anton Kurako (GoodforGod)
  * @since 2.3.2020
@@ -38,6 +38,9 @@ public class ArangoContainer<SELF extends ArangoContainer<SELF>> extends Generic
         super(IMAGE + ":" + version);
     }
 
+    /**
+     * Configures startup strategy to single TestContainer framework that container is ready to accept connections
+     */
     @Override
     protected void configure() {
         addFixedExposedPort(port, PORT_DEFAULT);
@@ -94,6 +97,13 @@ public class ArangoContainer<SELF extends ArangoContainer<SELF>> extends Generic
         return port;
     }
 
+    /**
+     * Specify container port to run as istead of default one
+     * 
+     * @see #PORT_DEFAULT
+     * @param port to set for container to run at
+     * @return container itself
+     */
     public ArangoContainer<SELF> setPort(int port) {
         this.port = port;
         return self();

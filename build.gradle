@@ -85,7 +85,7 @@ publishing {
             pom {
                 name = 'ArangoDB TestContainer'
                 url = 'https://github.com/GoodforGod/arangodb-testcontainer'
-                description = 'TestContainer ArangoDB container implementation.'
+                description = 'This is ArangoDB TestContainer implementation (with TestContainer startup strategy support)'
 
                 license {
                     name = 'MIT License'

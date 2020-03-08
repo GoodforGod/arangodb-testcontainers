@@ -1,4 +1,4 @@
-package io.testcontainer.arangodb;
+package io.testcontainers.arangodb.containers;
 
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Container;
@@ -14,7 +14,7 @@ import java.net.URL;
  * @since 2.3.2020
  */
 @Testcontainers
-class ArangoContainerSetAuthTests extends ArangoRunner {
+class ArangoContainerSetPasswordTests extends ArangoRunner {
 
     private static final String PASS = "mypass";
 

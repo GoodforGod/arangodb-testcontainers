@@ -1,4 +1,4 @@
-package io.testcontainer.arangodb;
+package io.testcontainers.arangodb.containers;
 
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Container;
@@ -14,13 +14,13 @@ import java.net.URL;
  * @since 2.3.2020
  */
 @Testcontainers
-class ArangoContainerNoAuthTests extends ArangoRunner {
+class ArangoContainerRandomPasswordTests extends ArangoRunner {
 
     @Container
-    private static final ArangoContainer container = new ArangoContainer().withoutAuthentication();
+    private static final ArangoContainer container = new ArangoContainer().withRandomPassword();
 
     @Test
-    void checkThatDatabaseIsRunningForDefaultConfig() throws Exception {
+    void checkThatAuthorizationRequired() throws Exception {
         final boolean running = container.isRunning();
         assertTrue(running);
 
@@ -32,10 +32,6 @@ class ArangoContainerNoAuthTests extends ArangoRunner {
         connection.connect();
 
         final int status = connection.getResponseCode();
-        final String response = getResponse(connection);
-
-        assertEquals(200, status);
-        assertNotNull(response);
-        assertFalse(response.isEmpty());
+        assertEquals(401, status);
     }
 }
