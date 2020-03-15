@@ -29,6 +29,12 @@ public class ArangoClusterDefault {
         return new ArangoClusterDefault(ArangoClusterImpBuilder.builder().build());
     }
 
+    public static ArangoClusterDefault build(String version) {
+        return new ArangoClusterDefault(ArangoClusterImpBuilder.builder()
+                .withVersion(version)
+                .build());
+    }
+
     private ArangoClusterDefault(Collection<ArangoClusterContainer> containers) {
         this.containers = containers.stream()
                 .sorted(Comparator.comparing(ArangoClusterContainer::getType))

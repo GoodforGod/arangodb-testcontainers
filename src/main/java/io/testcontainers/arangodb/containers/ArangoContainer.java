@@ -14,8 +14,8 @@ import org.testcontainers.containers.wait.strategy.Wait;
  */
 public class ArangoContainer extends GenericContainer<ArangoContainer> {
 
-    private static final String IMAGE = "arangodb";
-    private static final String LATEST_VERSION = "latest";
+    protected static final String IMAGE = "arangodb";
+    protected static final String LATEST_VERSION = "latest";
 
     public static final String HOST = "localhost";
     public static final Integer PORT_DEFAULT = 8529;
@@ -27,9 +27,6 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
 
     private String password;
     private Integer port = PORT_DEFAULT;
-    private Integer internalPort = PORT_DEFAULT;
-
-    private boolean enableAwaitStart = true;
 
     public ArangoContainer() {
         this(LATEST_VERSION);
@@ -43,28 +40,16 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
         return LoggerFactory.getLogger(getClass());
     }
 
-    protected ArangoContainer withoutStartAwait() {
-        this.enableAwaitStart = false;
-        return self();
-    }
-
-    protected ArangoContainer withInternalPort(Integer port) {
-        this.internalPort = port;
-        return self();
-    }
-
     /**
      * Configures startup strategy to single TestContainer framework that container is ready to accept connections
      */
     @Override
     protected void configure() {
-        withLogConsumer(new Slf4jLogConsumer(getLogger()));
-
         if (port != null)
-            addFixedExposedPort(port, internalPort);
+            addFixedExposedPort(port, PORT_DEFAULT);
 
-        if (enableAwaitStart)
-            waitingFor(Wait.forLogMessage(".*is ready for business. Have fun!.*\\n", 1));
+        withLogConsumer(new Slf4jLogConsumer(getLogger()));
+        waitingFor(Wait.forLogMessage(".*is ready for business. Have fun!.*\\n", 1));
     }
 
     /**
