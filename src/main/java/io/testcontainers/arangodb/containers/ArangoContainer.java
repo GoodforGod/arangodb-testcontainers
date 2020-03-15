@@ -28,7 +28,8 @@ public class ArangoContainer<SELF extends ArangoContainer<SELF>> extends Generic
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private String password;
-    private int port = PORT_DEFAULT;
+    private Integer port = PORT_DEFAULT;
+    private boolean enableAwaitStart = true;
 
     public ArangoContainer() {
         this(LATEST_VERSION);
@@ -38,19 +39,28 @@ public class ArangoContainer<SELF extends ArangoContainer<SELF>> extends Generic
         super(IMAGE + ":" + version);
     }
 
+    protected ArangoContainer turnOffStart() {
+        this.enableAwaitStart = false;
+        return this;
+    }
+
     /**
      * Configures startup strategy to single TestContainer framework that container is ready to accept connections
      */
     @Override
     protected void configure() {
-        addFixedExposedPort(port, PORT_DEFAULT);
         withLogConsumer(new Slf4jLogConsumer(logger));
-        waitingFor(Wait.forLogMessage(".*is ready for business. Have fun!.*\\n", 1));
+
+        if (port != null)
+            addFixedExposedPort(port, PORT_DEFAULT);
+
+        if (enableAwaitStart)
+            waitingFor(Wait.forLogMessage(".*is ready for business. Have fun!.*\\n", 1));
     }
 
     /**
      * Setup desired password for {@link #ROOT_USER} for database.
-     * 
+     *
      * @param password to set on startup
      * @return container itself
      */
@@ -65,7 +75,7 @@ public class ArangoContainer<SELF extends ArangoContainer<SELF>> extends Generic
 
     /**
      * Setup ArangoDB to start without authentication.
-     * 
+     *
      * @return container itself
      */
     public SELF withoutAuthentication() {
@@ -78,7 +88,7 @@ public class ArangoContainer<SELF extends ArangoContainer<SELF>> extends Generic
 
     /**
      * Setup random password for {@link #ROOT_USER} for database on startup.
-     * 
+     *
      * @return container itself
      */
     public SELF withRandomPassword() {
@@ -93,18 +103,18 @@ public class ArangoContainer<SELF extends ArangoContainer<SELF>> extends Generic
         return password;
     }
 
-    public int getPort() {
+    public Integer getPort() {
         return port;
     }
 
     /**
      * Specify container port to run as istead of default one
-     * 
-     * @see #PORT_DEFAULT
+     *
      * @param port to set for container to run at
      * @return container itself
+     * @see #PORT_DEFAULT
      */
-    public ArangoContainer<SELF> setPort(int port) {
+    public ArangoContainer<SELF> setPort(Integer port) {
         this.port = port;
         return self();
     }
