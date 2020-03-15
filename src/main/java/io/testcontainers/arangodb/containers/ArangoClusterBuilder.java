@@ -57,28 +57,28 @@ public class ArangoClusterBuilder {
                 "--agency.supervision true " +
                 "--database.directory " + agency3Alias;
 
-        final ArangoContainer agency1 = (ArangoContainer) new ArangoContainer()
-                .withoutAuthentication()
+        final ArangoContainer agency1 = new ArangoContainer()
+                .withoutAuth()
                 .turnOffStart()
-                .setPort(null)
+                .withPort(null)
                 .withExposedPorts(5001)
                 .withNetwork(network)
                 .withNetworkAliases(agency1Alias)
                 .withCommand(s1);
 
-        final ArangoContainer agency2 = (ArangoContainer) new ArangoContainer()
-                .withoutAuthentication()
+        final ArangoContainer agency2 = new ArangoContainer()
+                .withoutAuth()
                 .turnOffStart()
-                .setPort(null)
+                .withPort(null)
                 .withExposedPorts(5002)
                 .withNetwork(network)
                 .withNetworkAliases(agency2Alias)
                 .withCommand(s2);
 
-        final ArangoContainer agency3 = (ArangoContainer) new ArangoContainer()
-                .withoutAuthentication()
+        final ArangoContainer agency3 = new ArangoContainer()
+                .withoutAuth()
                 .turnOffStart()
-                .setPort(null)
+                .withPort(null)
                 .withExposedPorts(5003)
                 .withNetwork(network)
                 .withNetworkAliases(agency3Alias)
@@ -107,20 +107,20 @@ public class ArangoClusterBuilder {
                 "--cluster.agency-endpoint tcp://" + agency3Alias + ":5003 " +
                 "--database.directory " + db2Alias;
 
-        final ArangoContainer db1 = (ArangoContainer) new ArangoContainer()
-                .withoutAuthentication()
+        final ArangoContainer db1 = new ArangoContainer()
+                .withoutAuth()
                 .turnOffStart()
-                .setPort(null)
+                .withPort(null)
                 .withExposedPorts(6001)
                 .dependsOn(agency1, agency2, agency3)
                 .withNetwork(network)
                 .withNetworkAliases(db1Alias)
                 .withCommand(d1);
 
-        final ArangoContainer db2 = (ArangoContainer) new ArangoContainer()
-                .withoutAuthentication()
+        final ArangoContainer db2 = new ArangoContainer()
+                .withoutAuth()
                 .turnOffStart()
-                .setPort(null)
+                .withPort(null)
                 .withExposedPorts(6002)
                 .dependsOn(agency1, agency2, agency3)
                 .withNetwork(network)
@@ -149,20 +149,20 @@ public class ArangoClusterBuilder {
                 "--cluster.agency-endpoint tcp://" + agency3Alias + ":5003 " +
                 "--database.directory " + coordinator2Alias;
 
-        final ArangoContainer coordinator1 = (ArangoContainer) new ArangoContainer()
-                .withoutAuthentication()
+        final ArangoContainer coordinator1 = new ArangoContainer()
+                .withoutAuth()
                 .turnOffStart()
-                .setPort(null)
+                .withPort(null)
                 .withExposedPorts(7001)
                 .dependsOn(db1, db2)
                 .withNetwork(network)
                 .withNetworkAliases(coordinator1Alias)
                 .withCommand(c1);
 
-        final ArangoContainer coordinator2 = (ArangoContainer) new ArangoContainer()
-                .withoutAuthentication()
+        final ArangoContainer coordinator2 = new ArangoContainer()
+                .withoutAuth()
                 .turnOffStart()
-                .setPort(null)
+                .withPort(null)
                 .withExposedPorts(7002)
                 .dependsOn(db1, db2)
                 .withNetwork(network)

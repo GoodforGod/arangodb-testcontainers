@@ -19,7 +19,7 @@ class ArangoContainerSetPortTests extends ArangoRunner {
     private static final int PORT = 8233;
 
     @Container
-    private static final ArangoContainer container = new ArangoContainer().withoutAuthentication().setPort(PORT);
+    private static final ArangoContainer container = new ArangoContainer().withoutAuth().withPort(PORT);
 
     @Test
     void checkThatDatabaseIsRunning() throws Exception {

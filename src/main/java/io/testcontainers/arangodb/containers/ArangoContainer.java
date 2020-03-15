@@ -12,7 +12,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
  * @author Anton Kurako (GoodforGod)
  * @since 2.3.2020
  */
-public class ArangoContainer<SELF extends ArangoContainer<SELF>> extends GenericContainer<SELF> {
+public class ArangoContainer extends GenericContainer<ArangoContainer> {
 
     private static final String IMAGE = "arangodb";
     private static final String LATEST_VERSION = "latest";
@@ -29,19 +29,26 @@ public class ArangoContainer<SELF extends ArangoContainer<SELF>> extends Generic
 
     private String password;
     private Integer port = PORT_DEFAULT;
+    private Integer internalPort = PORT_DEFAULT;
+
     private boolean enableAwaitStart = true;
 
     public ArangoContainer() {
         this(LATEST_VERSION);
     }
 
-    private ArangoContainer(String version) {
+    public ArangoContainer(String version) {
         super(IMAGE + ":" + version);
     }
 
     protected ArangoContainer turnOffStart() {
         this.enableAwaitStart = false;
-        return this;
+        return self();
+    }
+
+    protected ArangoContainer withInternalPort(Integer port) {
+        this.internalPort = port;
+        return self();
     }
 
     /**
@@ -52,7 +59,7 @@ public class ArangoContainer<SELF extends ArangoContainer<SELF>> extends Generic
         withLogConsumer(new Slf4jLogConsumer(logger));
 
         if (port != null)
-            addFixedExposedPort(port, PORT_DEFAULT);
+            addFixedExposedPort(port, internalPort);
 
         if (enableAwaitStart)
             waitingFor(Wait.forLogMessage(".*is ready for business. Have fun!.*\\n", 1));
@@ -64,7 +71,7 @@ public class ArangoContainer<SELF extends ArangoContainer<SELF>> extends Generic
      * @param password to set on startup
      * @return container itself
      */
-    public SELF withPassword(String password) {
+    public ArangoContainer withPassword(String password) {
         if (getEnvMap().containsKey(ARANGO_NO_AUTH) || getEnvMap().containsKey(ARANGO_RANDOM_ROOT_PASSWORD))
             throwAuthException();
 
@@ -78,7 +85,7 @@ public class ArangoContainer<SELF extends ArangoContainer<SELF>> extends Generic
      *
      * @return container itself
      */
-    public SELF withoutAuthentication() {
+    public ArangoContainer withoutAuth() {
         if (getEnvMap().containsKey(ARANGO_ROOT_PASSWORD) || getEnvMap().containsKey(ARANGO_RANDOM_ROOT_PASSWORD))
             throwAuthException();
 
@@ -91,7 +98,7 @@ public class ArangoContainer<SELF extends ArangoContainer<SELF>> extends Generic
      *
      * @return container itself
      */
-    public SELF withRandomPassword() {
+    public ArangoContainer withRandomPassword() {
         if (getEnvMap().containsKey(ARANGO_ROOT_PASSWORD) || getEnvMap().containsKey(ARANGO_NO_AUTH))
             throwAuthException();
 
@@ -114,7 +121,7 @@ public class ArangoContainer<SELF extends ArangoContainer<SELF>> extends Generic
      * @return container itself
      * @see #PORT_DEFAULT
      */
-    public ArangoContainer<SELF> setPort(Integer port) {
+    public ArangoContainer withPort(Integer port) {
         this.port = port;
         return self();
     }
