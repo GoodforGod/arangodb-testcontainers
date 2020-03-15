@@ -59,7 +59,7 @@ public class ArangoClusterBuilder {
 
         final ArangoContainer agency1 = new ArangoContainer()
                 .withoutAuth()
-                .turnOffStart()
+                .withoutStartAwait()
                 .withPort(null)
                 .withExposedPorts(5001)
                 .withNetwork(network)
@@ -68,7 +68,7 @@ public class ArangoClusterBuilder {
 
         final ArangoContainer agency2 = new ArangoContainer()
                 .withoutAuth()
-                .turnOffStart()
+                .withoutStartAwait()
                 .withPort(null)
                 .withExposedPorts(5002)
                 .withNetwork(network)
@@ -77,7 +77,7 @@ public class ArangoClusterBuilder {
 
         final ArangoContainer agency3 = new ArangoContainer()
                 .withoutAuth()
-                .turnOffStart()
+                .withoutStartAwait()
                 .withPort(null)
                 .withExposedPorts(5003)
                 .withNetwork(network)
@@ -109,7 +109,7 @@ public class ArangoClusterBuilder {
 
         final ArangoContainer db1 = new ArangoContainer()
                 .withoutAuth()
-                .turnOffStart()
+                .withoutStartAwait()
                 .withPort(null)
                 .withExposedPorts(6001)
                 .dependsOn(agency1, agency2, agency3)
@@ -119,7 +119,7 @@ public class ArangoClusterBuilder {
 
         final ArangoContainer db2 = new ArangoContainer()
                 .withoutAuth()
-                .turnOffStart()
+                .withoutStartAwait()
                 .withPort(null)
                 .withExposedPorts(6002)
                 .dependsOn(agency1, agency2, agency3)
@@ -151,7 +151,7 @@ public class ArangoClusterBuilder {
 
         final ArangoContainer coordinator1 = new ArangoContainer()
                 .withoutAuth()
-                .turnOffStart()
+                .withoutStartAwait()
                 .withPort(null)
                 .withExposedPorts(7001)
                 .dependsOn(db1, db2)
@@ -161,7 +161,7 @@ public class ArangoClusterBuilder {
 
         final ArangoContainer coordinator2 = new ArangoContainer()
                 .withoutAuth()
-                .turnOffStart()
+                .withoutStartAwait()
                 .withPort(null)
                 .withExposedPorts(7002)
                 .dependsOn(db1, db2)

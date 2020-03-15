@@ -1,5 +1,6 @@
 package io.testcontainers.arangodb.containers;
 
+import com.github.dockerjava.api.exception.NotFoundException;
 import org.testcontainers.containers.Network;
 import org.testcontainers.lifecycle.Startable;
 
@@ -20,19 +21,16 @@ import static java.util.Collections.emptyList;
  */
 public class ArangoClusterImpBuilder {
 
-    public static final int AGENCY_NODES_DEFAULT = 3;
-    public static final int DATABASE_NODES_DEFAULT = 2;
-    public static final int COORDINATOR_NODES_DEFAULT = 2;
+    private int agencyNodes = ArangoClusterDefault.AGENCY_NODES_DEFAULT;
+    private int databaseNodes = ArangoClusterDefault.DATABASE_NODES_DEFAULT;
+    private int coordinatorNodes = ArangoClusterDefault.COORDINATOR_NODES_DEFAULT;
 
-    public static final int CLUSTER_PORT = 8530;
+    private int agencyPortFrom = ArangoClusterDefault.AGENCY_PORT_DEFAULT;
+    private int databasePortFrom = ArangoClusterDefault.DATABASE_PORT_DEFAULT;
+    private int coordinatorPortFrom = ArangoClusterDefault.COORDINATOR_PORT_DEFAULT;
 
-    private int agencyNodes = AGENCY_NODES_DEFAULT;
-    private int databaseNodes = DATABASE_NODES_DEFAULT;
-    private int coordinatorNodes = COORDINATOR_NODES_DEFAULT;
-
-    private int agencyPortFrom = 8500;
-    private int databasePortFrom = 8515;
-    private int coordinatorPortFrom = CLUSTER_PORT;
+    private ArangoClusterImpBuilder() {
+    }
 
     public static ArangoClusterImpBuilder builder() {
         return new ArangoClusterImpBuilder();
@@ -81,7 +79,11 @@ public class ArangoClusterImpBuilder {
         for (int i = 0; i < agencyNodes; i++) {
             final String alias = AGENCY.getAlias(i);
             final int port = agencyPortFrom + i;
-            agencies.add(ArangoClusterContainer.agency(alias, port, emptyList()));
+            if (agencyNodes - 1 == i) {
+                agencies.add(ArangoClusterContainer.agency(true, alias, port, emptyList()));
+            } else {
+                agencies.add(ArangoClusterContainer.agency(alias, port, emptyList()));
+            }
         }
 
         final List<String> agencyEndpoints = agencies.stream()
@@ -89,7 +91,11 @@ public class ArangoClusterImpBuilder {
                 .collect(Collectors.toList());
 
         // Add agencies to the one to coordinate and discovery for cluster
-        final ArangoClusterContainer centralAgency = agencies.get(0);
+        final ArangoClusterContainer centralAgency = agencies.stream()
+                .filter(a -> a.getType().equals(AGENCY_LEADER))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Arango Agency Leader Not Found!"));
+
         final List<Startable> centralDependsOn = agencies.stream()
                 .filter(a -> !a.getNodeAddress().equals(centralAgency.getNodeAddress()))
                 .collect(Collectors.toList());
@@ -106,14 +112,13 @@ public class ArangoClusterImpBuilder {
             databases.add((ArangoClusterContainer) database);
         }
 
-
         // Create coordinators
         final List<Startable> coordinatorDependsOn = new ArrayList<>(databases);
 
         // Build agencies
         for (int i = 0; i < coordinatorNodes; i++) {
             final String alias = COORDINATOR.getAlias(i);
-            final int port = coordinatorPortFrom  + i;
+            final int port = coordinatorPortFrom + i;
             final ArangoContainer coordinator = ArangoClusterContainer.coordinator(alias, port, agencyEndpoints).dependsOn(coordinatorDependsOn);
             coordinators.add((ArangoClusterContainer) coordinator);
         }

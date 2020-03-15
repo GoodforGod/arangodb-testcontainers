@@ -25,8 +25,6 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
     private static final String ARANGO_ROOT_PASSWORD = "ARANGO_ROOT_PASSWORD";
     private static final String ARANGO_RANDOM_ROOT_PASSWORD = "ARANGO_RANDOM_ROOT_PASSWORD";
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
     private String password;
     private Integer port = PORT_DEFAULT;
     private Integer internalPort = PORT_DEFAULT;
@@ -41,7 +39,11 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
         super(IMAGE + ":" + version);
     }
 
-    protected ArangoContainer turnOffStart() {
+    protected Logger getLogger() {
+        return LoggerFactory.getLogger(getClass());
+    }
+
+    protected ArangoContainer withoutStartAwait() {
         this.enableAwaitStart = false;
         return self();
     }
@@ -56,7 +58,7 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
      */
     @Override
     protected void configure() {
-        withLogConsumer(new Slf4jLogConsumer(logger));
+        withLogConsumer(new Slf4jLogConsumer(getLogger()));
 
         if (port != null)
             addFixedExposedPort(port, internalPort);
