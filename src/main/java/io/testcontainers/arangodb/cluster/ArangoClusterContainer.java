@@ -108,7 +108,6 @@ public class ArangoClusterContainer extends ArangoContainer {
                 .add("--server.authentication=false")
                 .add("--server.endpoint").add("tcp://0.0.0.0:" + port)
                 .add("--cluster.my-address").add(endpoint)
-//                .add("--cluster.my-local-info").add(alias)
                 .add("--cluster.my-role DBSERVER")
                 .add("--database.directory").add(alias);
 
@@ -125,7 +124,6 @@ public class ArangoClusterContainer extends ArangoContainer {
                 .add("--server.authentication=false")
                 .add("--server.endpoint").add("tcp://0.0.0.0:" + port)
                 .add("--cluster.my-address").add(endpoint)
-//                .add("--cluster.my-local-info").add(alias)
                 .add("--cluster.my-role COORDINATOR")
                 .add("--database.directory").add(alias);
 

@@ -1,7 +1,6 @@
 package io.testcontainers.arangodb.cluster;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Arango small cluster impl
@@ -18,7 +17,7 @@ public class ArangoClusterDefault {
 
     public static final int AGENCY_PORT_DEFAULT = 8500;
     public static final int DATABASE_PORT_DEFAULT = 8515;
-    public static final int COORDINATOR_PORT_DEFAULT = 8530;
+    public static final int COORDINATOR_PORT_DEFAULT = 8529;
 
     /**
      * Containts default number of nodes

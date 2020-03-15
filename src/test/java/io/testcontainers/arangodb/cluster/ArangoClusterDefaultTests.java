@@ -13,6 +13,7 @@ import java.util.Arrays;
 
 /**
  * ArangoDB default cluster configuration tests
+ * 
  * @see ArangoClusterDefault
  * @author Anton Kurako (GoodforGod)
  * @since 15.3.2020
@@ -39,6 +40,10 @@ class ArangoClusterDefaultTests extends ArangoRunner {
 
     @Test
     void allCoordinatorsAreAccessible() throws IOException {
+        assertEquals(ArangoClusterContainer.NodeType.AGENCY_LEADER, agency1.getType());
+        assertEquals(ArangoClusterContainer.NodeType.AGENCY, agency2.getType());
+        assertEquals(ArangoClusterContainer.NodeType.AGENCY, agency3.getType());
+
         assertTrue(agency1.isRunning());
         assertTrue(agency2.isRunning());
         assertTrue(agency3.isRunning());

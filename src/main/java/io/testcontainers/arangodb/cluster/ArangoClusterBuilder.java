@@ -33,8 +33,7 @@ public class ArangoClusterBuilder {
 
     private String version = ArangoContainer.VERSION_DEFAULT;
 
-    private ArangoClusterBuilder() {
-    }
+    private ArangoClusterBuilder() {}
 
     public ArangoClusterBuilder withAgencyNodes(int agencyNodes) {
         this.agencyNodes = agencyNodes;

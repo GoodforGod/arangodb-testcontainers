@@ -50,8 +50,8 @@ class ArangoClusterBuilderTests extends ArangoRunner {
     @Test
     void allCoordinatorsAreAccessible() throws IOException {
         assertEquals(ArangoClusterContainer.NodeType.AGENCY_LEADER, agency1.getType());
-        assertEquals(ArangoClusterContainer.NodeType.AGENCY, agency1.getType());
-        assertEquals(ArangoClusterContainer.NodeType.AGENCY, agency1.getType());
+        assertEquals(ArangoClusterContainer.NodeType.AGENCY, agency2.getType());
+        assertEquals(ArangoClusterContainer.NodeType.AGENCY, agency3.getType());
 
         assertTrue(agency1.isRunning());
         assertTrue(agency2.isRunning());
