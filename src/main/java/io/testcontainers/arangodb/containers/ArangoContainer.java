@@ -1,10 +1,12 @@
 package io.testcontainers.arangodb.containers;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
+
+import java.util.function.Consumer;
 
 /**
  * ArangoDB TestContainer docker container implementation. Uses Log4j as logger for container output.
@@ -14,8 +16,8 @@ import org.testcontainers.containers.wait.strategy.Wait;
  */
 public class ArangoContainer extends GenericContainer<ArangoContainer> {
 
-    protected static final String IMAGE = "arangodb";
-    protected static final String LATEST_VERSION = "latest";
+    public static final String VERSION_DEFAULT = "latest";
+    private static final String IMAGE = "arangodb";
 
     public static final String HOST = "localhost";
     public static final Integer PORT_DEFAULT = 8529;
@@ -27,17 +29,23 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
 
     private String password;
     private Integer port = PORT_DEFAULT;
+    private Integer containerPort = PORT_DEFAULT;
 
     public ArangoContainer() {
-        this(LATEST_VERSION);
+        this(VERSION_DEFAULT);
     }
 
     public ArangoContainer(String version) {
         super(IMAGE + ":" + version);
     }
 
-    protected Logger getLogger() {
-        return LoggerFactory.getLogger(getClass());
+    protected Consumer<OutputFrame> getOutputConsumer() {
+        return new Slf4jLogConsumer(LoggerFactory.getLogger(getClass()));
+    }
+
+    protected ArangoContainer withContainerPort(Integer port) {
+        this.containerPort = port;
+        return this;
     }
 
     /**
@@ -45,10 +53,10 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
      */
     @Override
     protected void configure() {
-        if (port != null)
-            addFixedExposedPort(port, PORT_DEFAULT);
+        if (port != null && containerPort != null)
+            addFixedExposedPort(port, containerPort);
 
-        withLogConsumer(new Slf4jLogConsumer(getLogger()));
+        withLogConsumer(getOutputConsumer());
         waitingFor(Wait.forLogMessage(".*is ready for business. Have fun!.*\\n", 1));
     }
 

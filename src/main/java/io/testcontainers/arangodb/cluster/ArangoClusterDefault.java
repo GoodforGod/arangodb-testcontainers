@@ -1,4 +1,4 @@
-package io.testcontainers.arangodb.containers;
+package io.testcontainers.arangodb.cluster;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
  * Arango small cluster impl
  *
  * @author Anton Kurako (GoodforGod)
- * @see ArangoClusterImpBuilder
+ * @see ArangoClusterBuilder
  * @since 15.3.2020
  */
 public class ArangoClusterDefault {
@@ -26,24 +26,22 @@ public class ArangoClusterDefault {
     private final List<ArangoClusterContainer> containers;
 
     public static ArangoClusterDefault build() {
-        return new ArangoClusterDefault(ArangoClusterImpBuilder.builder().build());
+        return new ArangoClusterDefault(ArangoClusterBuilder.builder().build());
     }
 
     public static ArangoClusterDefault build(String version) {
-        return new ArangoClusterDefault(ArangoClusterImpBuilder.builder()
+        return new ArangoClusterDefault(ArangoClusterBuilder.builder()
                 .withVersion(version)
                 .build());
     }
 
-    private ArangoClusterDefault(Collection<ArangoClusterContainer> containers) {
-        this.containers = containers.stream()
-                .sorted(Comparator.comparing(ArangoClusterContainer::getType))
-                .collect(Collectors.toList());
+    private ArangoClusterDefault(List<ArangoClusterContainer> containers) {
+        this.containers = containers;
 
-        if(this.containers.get(0).getType().equals(ArangoClusterContainer.NodeType.AGENCY_LEADER))
-            Collections.swap(this.containers, 0, 2);
-        if(this.containers.get(1).getType().equals(ArangoClusterContainer.NodeType.AGENCY_LEADER))
-            Collections.swap(this.containers, 1, 2);
+        if (this.containers.get(1).getType().equals(ArangoClusterContainer.NodeType.AGENCY_LEADER))
+            Collections.swap(this.containers, 1, 0);
+        if (this.containers.get(2).getType().equals(ArangoClusterContainer.NodeType.AGENCY_LEADER))
+            Collections.swap(this.containers, 2, 0);
     }
 
     public List<ArangoClusterContainer> getContainers() {

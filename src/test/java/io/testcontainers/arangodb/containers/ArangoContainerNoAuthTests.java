@@ -1,5 +1,6 @@
 package io.testcontainers.arangodb.containers;
 
+import io.testcontainers.arangodb.ArangoRunner;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
