@@ -83,7 +83,7 @@ public class ArangoClusterContainer extends ArangoContainer {
     }
 
     protected static ArangoClusterContainer agency(String alias, int port, String version, int totalAgencyNodes,
-                                                   boolean leader) {
+                                                   boolean leader, boolean expose) {
         final StringJoiner cmd = new StringJoiner(" ");
         final String endpoint = "tcp://" + alias + ":" + port;
         cmd.add("arangod")
@@ -95,13 +95,13 @@ public class ArangoClusterContainer extends ArangoContainer {
                 .add("--agency.supervision true")
                 .add("--database.directory").add(alias);
 
-        final ArangoClusterContainer container = build(version, cmd.toString(), alias, port);
+        final ArangoClusterContainer container = build(version, cmd.toString(), alias, port, expose);
         container.type = (leader) ? NodeType.AGENCY_LEADER : NodeType.AGENCY;
         container.endpoint = endpoint;
         return container;
     }
 
-    protected static ArangoClusterContainer dbserver(String alias, int port, String version) {
+    protected static ArangoClusterContainer dbserver(String alias, int port, String version, boolean expose) {
         final StringJoiner cmd = new StringJoiner(" ");
         final String endpoint = "tcp://" + alias + ":" + port;
         cmd.add("arangod")
@@ -111,7 +111,7 @@ public class ArangoClusterContainer extends ArangoContainer {
                 .add("--cluster.my-role DBSERVER")
                 .add("--database.directory").add(alias);
 
-        final ArangoClusterContainer container = build(version, cmd.toString(), alias, port);
+        final ArangoClusterContainer container = build(version, cmd.toString(), alias, port, expose);
         container.endpoint = endpoint;
         container.type = NodeType.DBSERVER;
         return container;
@@ -127,18 +127,23 @@ public class ArangoClusterContainer extends ArangoContainer {
                 .add("--cluster.my-role COORDINATOR")
                 .add("--database.directory").add(alias);
 
-        final ArangoClusterContainer container = build(version, cmd.toString(), alias, port);
+        final ArangoClusterContainer container = (ArangoClusterContainer) build(version, cmd.toString(), alias, port, true)
+                // .withContainerPort(port).withPort(port)
+                .withExposedPorts(port);
         container.endpoint = endpoint;
         container.type = NodeType.COORDINATOR;
         return container;
     }
 
-    private static ArangoClusterContainer build(String version, String cmd, String networkAliasName, int port) {
-        return (ArangoClusterContainer) new ArangoClusterContainer(version)
+    private static ArangoClusterContainer build(String version, String cmd, String networkAliasName, int port, boolean expose) {
+        final ArangoClusterContainer container = (ArangoClusterContainer) new ArangoClusterContainer(version)
                 .withContainerPort(port).withPort(port)
                 .withoutAuth()
-                .withExposedPorts(port)
                 .withNetworkAliases(networkAliasName)
                 .withCommand(cmd);
+
+        return (expose)
+                ? (ArangoClusterContainer) container.withExposedPorts(port)
+                : container;
     }
 }

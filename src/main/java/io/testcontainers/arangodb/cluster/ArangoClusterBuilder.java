@@ -1,5 +1,6 @@
 package io.testcontainers.arangodb.cluster;
 
+import io.testcontainers.arangodb.cluster.ArangoClusterContainer.NodeType;
 import io.testcontainers.arangodb.containers.ArangoContainer;
 import org.junit.platform.commons.util.StringUtils;
 import org.testcontainers.containers.Network;
@@ -16,7 +17,10 @@ import static io.testcontainers.arangodb.cluster.ArangoClusterContainer.NodeType
 import static java.util.Collections.singletonList;
 
 /**
- * Description in progress
+ * Arango Cluster TestContainer {@link ArangoContainer} Builder. Builds agency, dbserver, coordinator
+ * containers with specified configuration of nodes.
+ *
+ * https://www.arangodb.com/docs/stable/deployment-cluster-manual-start.html
  *
  * @author Anton Kurako (GoodforGod)
  * @since 15.3.2020
@@ -24,47 +28,99 @@ import static java.util.Collections.singletonList;
 public class ArangoClusterBuilder {
 
     private int agencyNodes = ArangoClusterDefault.AGENCY_NODES_DEFAULT;
-    private int databaseNodes = ArangoClusterDefault.DATABASE_NODES_DEFAULT;
+    private int databaseNodes = ArangoClusterDefault.DBSERVER_NODES_DEFAULT;
     private int coordinatorNodes = ArangoClusterDefault.COORDINATOR_NODES_DEFAULT;
 
     private int agencyPortFrom = ArangoClusterDefault.AGENCY_PORT_DEFAULT;
-    private int databasePortFrom = ArangoClusterDefault.DATABASE_PORT_DEFAULT;
+    private int dbserverPortFrom = ArangoClusterDefault.DBSERVER_PORT_DEFAULT;
     private int coordinatorPortFrom = ArangoClusterDefault.COORDINATOR_PORT_DEFAULT;
 
     private String version = ArangoContainer.VERSION_DEFAULT;
+    private boolean exposeAgencyNodes = false;
+    private boolean exposeDBServerNodes = false;
 
     private ArangoClusterBuilder() {}
 
+    /**
+     * Exposes {@link NodeType#AGENCY} nodes ports as specified per builder configuration
+     * 
+     * @return self
+     */
+    public ArangoClusterBuilder withExposedAgencyNodes() {
+        this.exposeAgencyNodes = true;
+        return this;
+    }
+
+    /**
+     * Exposes {@link NodeType#DBSERVER} nodes ports as specified per builder configuration
+     * 
+     * @return self
+     */
+    public ArangoClusterBuilder withExposedDBServerNodes() {
+        this.exposeDBServerNodes = true;
+        return this;
+    }
+
+    /**
+     * @param agencyNodes amount of {@link NodeType#AGENCY} nodes to create in cluster
+     * @return self
+     */
     public ArangoClusterBuilder withAgencyNodes(int agencyNodes) {
         this.agencyNodes = agencyNodes;
         return this;
     }
 
+    /**
+     * @param databaseNodes amount of {@link NodeType#DBSERVER} nodes to create in cluster
+     * @return self
+     */
     public ArangoClusterBuilder withDatabaseNodes(int databaseNodes) {
         this.databaseNodes = databaseNodes;
         return this;
     }
 
+    /**
+     * @param coordinatorNodes amount of {@link NodeType#COORDINATOR} nodes to create in cluster
+     * @return self
+     */
     public ArangoClusterBuilder withCoordinatorNodes(int coordinatorNodes) {
         this.coordinatorNodes = coordinatorNodes;
         return this;
     }
 
+    /**
+     * @param agencyPortFrom port to start exposing {@link NodeType#AGENCY} nodes
+     * @return self
+     */
     public ArangoClusterBuilder withAgencyPortFrom(int agencyPortFrom) {
         this.agencyPortFrom = agencyPortFrom;
         return this;
     }
 
-    public ArangoClusterBuilder withDatabasePortFrom(int databasePortFrom) {
-        this.databasePortFrom = databasePortFrom;
+    /**
+     * @param dbserverPortFrom port to start exposing {@link NodeType#DBSERVER} nodes
+     * @return self
+     */
+    public ArangoClusterBuilder withDBServerPortFrom(int dbserverPortFrom) {
+        this.dbserverPortFrom = dbserverPortFrom;
         return this;
     }
 
+    /**
+     * @param coordinatorPortFrom port to start exposing {@link NodeType#COORDINATOR} nodes
+     * @return self
+     */
     public ArangoClusterBuilder withCoordinatorPortFrom(int coordinatorPortFrom) {
         this.coordinatorPortFrom = coordinatorPortFrom;
         return this;
     }
 
+    /**
+     * ArangoDB image version
+     * 
+     * @param version to set for images
+     * @return self
+     */
     public ArangoClusterBuilder withVersion(String version) {
         this.version = version;
         return this;
@@ -96,14 +152,13 @@ public class ArangoClusterBuilder {
             final String alias = AGENCY.getAlias(i);
             final int port = agencyPortFrom + i;
             if (i == 0) {
-                leader = ArangoClusterContainer.agency(alias, port, version, agencyNodes,
-                        true);
+                leader = ArangoClusterContainer.agency(alias, port, version, agencyNodes, true, exposeAgencyNodes);
                 leader.withAgencyEndpoints(singletonList(leader.getEndpoint()));
                 agencies.add(leader);
             } else {
                 // Add agency dependency and endpoint of leader agency
                 final ArangoClusterContainer agency = (ArangoClusterContainer) ArangoClusterContainer
-                        .agency(alias, port, version, agencyNodes, false)
+                        .agency(alias, port, version, agencyNodes, false, exposeAgencyNodes)
                         .withAgencyEndpoints(singletonList(leader.getEndpoint()))
                         .dependsOn(leader);
                 agencies.add(agency);
@@ -120,8 +175,8 @@ public class ArangoClusterBuilder {
         // Build agencies
         for (int i = 0; i < databaseNodes; i++) {
             final String alias = DBSERVER.getAlias(i);
-            final int port = databasePortFrom + i;
-            final ArangoContainer database = ArangoClusterContainer.dbserver(alias, port, version)
+            final int port = dbserverPortFrom + i;
+            final ArangoContainer database = ArangoClusterContainer.dbserver(alias, port, version, exposeDBServerNodes)
                     .withAgencyEndpoints(agencyEndpoints)
                     .dependsOn(databaseDependsOn);
             databases.add((ArangoClusterContainer) database);

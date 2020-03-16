@@ -1,9 +1,12 @@
 package io.testcontainers.arangodb.cluster;
 
+import io.testcontainers.arangodb.containers.ArangoContainer;
+
 import java.util.*;
 
 /**
- * Arango small cluster impl
+ * ArangoDB TestContainer small cluster configuration. 3 Agency nodes, 2 DBServer nodes, 2 Coordinator nodes.
+ * Cluster is available on 8529 port.
  *
  * @author Anton Kurako (GoodforGod)
  * @see ArangoClusterBuilder
@@ -12,12 +15,15 @@ import java.util.*;
 public class ArangoClusterDefault {
 
     public static final int AGENCY_NODES_DEFAULT = 3;
-    public static final int DATABASE_NODES_DEFAULT = 2;
+    public static final int DBSERVER_NODES_DEFAULT = 2;
     public static final int COORDINATOR_NODES_DEFAULT = 2;
 
-    public static final int AGENCY_PORT_DEFAULT = 8500;
-    public static final int DATABASE_PORT_DEFAULT = 8515;
+    /**
+     * Cluster default port.
+     */
     public static final int COORDINATOR_PORT_DEFAULT = 8529;
+    public static final int DBSERVER_PORT_DEFAULT = 8515;
+    public static final int AGENCY_PORT_DEFAULT = 8500;
 
     /**
      * Containts default number of nodes
@@ -25,11 +31,38 @@ public class ArangoClusterDefault {
     private final List<ArangoClusterContainer> containers;
 
     public static ArangoClusterDefault build() {
-        return new ArangoClusterDefault(ArangoClusterBuilder.builder().build());
+        return build(COORDINATOR_PORT_DEFAULT);
     }
 
+    /**
+     * @see ArangoClusterBuilder#withCoordinatorPortFrom(int)
+     * @param coordinatorPortFrom port to start exposing coordinators
+     * @return self
+     */
+    public static ArangoClusterDefault build(int coordinatorPortFrom) {
+        return build(COORDINATOR_PORT_DEFAULT, ArangoContainer.VERSION_DEFAULT);
+    }
+
+    /**
+     * ArangoDB image version
+     * 
+     * @param version for iamges
+     * @return self
+     */
     public static ArangoClusterDefault build(String version) {
+        return build(COORDINATOR_PORT_DEFAULT, version);
+    }
+
+    /**
+     * Specify coordinator port where cluster will be available.
+     * 
+     * @param coordinatorPortFrom to start mapping coordinators from.
+     * @param version             ArangoDB version
+     * @return self
+     */
+    public static ArangoClusterDefault build(int coordinatorPortFrom, String version) {
         return new ArangoClusterDefault(ArangoClusterBuilder.builder()
+                .withCoordinatorPortFrom(coordinatorPortFrom)
                 .withVersion(version)
                 .build());
     }

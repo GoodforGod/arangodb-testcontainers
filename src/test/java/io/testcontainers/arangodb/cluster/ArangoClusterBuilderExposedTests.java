@@ -21,11 +21,13 @@ import static io.testcontainers.arangodb.cluster.ArangoClusterDefault.*;
  * @since 15.3.2020
  */
 @Testcontainers
-class ArangoClusterBuilderTests extends ArangoRunner {
+class ArangoClusterBuilderExposedTests extends ArangoRunner {
 
     private static List<ArangoClusterContainer> clusterNodes = ArangoClusterBuilder.builder()
             .withCoordinatorNodes(3)
             .withDatabaseNodes(3)
+            .withExposedAgencyNodes()
+            .withExposedDBServerNodes()
             .build();
 
     @Container
@@ -65,12 +67,12 @@ class ArangoClusterBuilderTests extends ArangoRunner {
         assertTrue(coordinator2.isRunning());
         assertTrue(coordinator3.isRunning());
 
-        assertFalse(agency1.getExposedPorts().contains(AGENCY_PORT_DEFAULT));
-        assertFalse(agency2.getExposedPorts().contains(AGENCY_PORT_DEFAULT + 1));
-        assertFalse(agency3.getExposedPorts().contains(AGENCY_PORT_DEFAULT + 2));
-        assertFalse(db1.getExposedPorts().contains(DBSERVER_PORT_DEFAULT));
-        assertFalse(db2.getExposedPorts().contains(DBSERVER_PORT_DEFAULT + 1));
-        assertFalse(db3.getExposedPorts().contains(DBSERVER_PORT_DEFAULT + 2));
+        assertTrue(agency1.getExposedPorts().contains(AGENCY_PORT_DEFAULT));
+        assertTrue(agency2.getExposedPorts().contains(AGENCY_PORT_DEFAULT + 1));
+        assertTrue(agency3.getExposedPorts().contains(AGENCY_PORT_DEFAULT + 2));
+        assertTrue(db1.getExposedPorts().contains(DBSERVER_PORT_DEFAULT));
+        assertTrue(db2.getExposedPorts().contains(DBSERVER_PORT_DEFAULT + 1));
+        assertTrue(db3.getExposedPorts().contains(DBSERVER_PORT_DEFAULT + 2));
 
         for (ArangoContainer coordinator : Arrays.asList(coordinator1, coordinator2, coordinator3)) {
             final URL url = getCheckUrl(coordinator);
