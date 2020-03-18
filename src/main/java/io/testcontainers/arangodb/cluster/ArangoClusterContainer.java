@@ -127,9 +127,7 @@ public class ArangoClusterContainer extends ArangoContainer {
                 .add("--cluster.my-role COORDINATOR")
                 .add("--database.directory").add(alias);
 
-        final ArangoClusterContainer container = (ArangoClusterContainer) build(version, cmd.toString(), alias, port, true)
-                // .withContainerPort(port).withPort(port)
-                .withExposedPorts(port);
+        final ArangoClusterContainer container = build(version, cmd.toString(), alias, port, true);
         container.endpoint = endpoint;
         container.type = NodeType.COORDINATOR;
         return container;

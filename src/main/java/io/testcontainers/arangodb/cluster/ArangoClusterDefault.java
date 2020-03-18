@@ -5,7 +5,7 @@ import io.testcontainers.arangodb.containers.ArangoContainer;
 import java.util.*;
 
 /**
- * ArangoDB TestContainer small cluster configuration. 3 Agent nodes, 2 DBServer nodes, 2 Coordinator nodes.
+ * ArangoDB TestContainer small cluster configuration. 3 AGENT nodes, 2 DBSERVER nodes, 2 COORDINATOR nodes.
  * Cluster is available on 8529 port.
  *
  * @author Anton Kurako (GoodforGod)

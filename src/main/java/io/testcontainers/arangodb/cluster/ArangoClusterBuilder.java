@@ -17,7 +17,7 @@ import static io.testcontainers.arangodb.cluster.ArangoClusterContainer.NodeType
 import static java.util.Collections.singletonList;
 
 /**
- * Arango Cluster TestContainer {@link ArangoContainer} Builder. Builds agent, dbserver, coordinator
+ * Arango Cluster TestContainer {@link ArangoContainer} Builder. Builds AGENT, DBSERVER, COORDINATOR
  * containers with specified configuration of nodes.
  *
  * https://www.arangodb.com/docs/stable/deployment-cluster-manual-start.html
