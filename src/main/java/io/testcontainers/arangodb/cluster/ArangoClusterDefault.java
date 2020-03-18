@@ -5,7 +5,7 @@ import io.testcontainers.arangodb.containers.ArangoContainer;
 import java.util.*;
 
 /**
- * ArangoDB TestContainer small cluster configuration. 3 Agency nodes, 2 DBServer nodes, 2 Coordinator nodes.
+ * ArangoDB TestContainer small cluster configuration. 3 Agent nodes, 2 DBServer nodes, 2 Coordinator nodes.
  * Cluster is available on 8529 port.
  *
  * @author Anton Kurako (GoodforGod)
@@ -70,9 +70,9 @@ public class ArangoClusterDefault {
     private ArangoClusterDefault(List<ArangoClusterContainer> containers) {
         this.containers = containers;
 
-        if (this.containers.get(1).getType().equals(ArangoClusterContainer.NodeType.AGENCY_LEADER))
+        if (this.containers.get(1).getType().equals(ArangoClusterContainer.NodeType.AGENT_LEADER))
             Collections.swap(this.containers, 1, 0);
-        if (this.containers.get(2).getType().equals(ArangoClusterContainer.NodeType.AGENCY_LEADER))
+        if (this.containers.get(2).getType().equals(ArangoClusterContainer.NodeType.AGENT_LEADER))
             Collections.swap(this.containers, 2, 0);
     }
 
@@ -80,15 +80,15 @@ public class ArangoClusterDefault {
         return new ArrayList<>(containers);
     }
 
-    public ArangoClusterContainer getAgency1() {
+    public ArangoClusterContainer getAgent1() {
         return containers.get(0);
     }
 
-    public ArangoClusterContainer getAgency2() {
+    public ArangoClusterContainer getAgent2() {
         return containers.get(1);
     }
 
-    public ArangoClusterContainer getAgency3() {
+    public ArangoClusterContainer getAgent3() {
         return containers.get(2);
     }
 

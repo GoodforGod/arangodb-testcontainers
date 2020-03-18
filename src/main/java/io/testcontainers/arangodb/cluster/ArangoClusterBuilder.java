@@ -17,7 +17,7 @@ import static io.testcontainers.arangodb.cluster.ArangoClusterContainer.NodeType
 import static java.util.Collections.singletonList;
 
 /**
- * Arango Cluster TestContainer {@link ArangoContainer} Builder. Builds agency, dbserver, coordinator
+ * Arango Cluster TestContainer {@link ArangoContainer} Builder. Builds agent, dbserver, coordinator
  * containers with specified configuration of nodes.
  *
  * https://www.arangodb.com/docs/stable/deployment-cluster-manual-start.html
@@ -27,27 +27,27 @@ import static java.util.Collections.singletonList;
  */
 public class ArangoClusterBuilder {
 
-    private int agencyNodes = ArangoClusterDefault.AGENCY_NODES_DEFAULT;
+    private int agentNodes = ArangoClusterDefault.AGENCY_NODES_DEFAULT;
     private int databaseNodes = ArangoClusterDefault.DBSERVER_NODES_DEFAULT;
     private int coordinatorNodes = ArangoClusterDefault.COORDINATOR_NODES_DEFAULT;
 
-    private int agencyPortFrom = ArangoClusterDefault.AGENCY_PORT_DEFAULT;
+    private int agentPortFrom = ArangoClusterDefault.AGENCY_PORT_DEFAULT;
     private int dbserverPortFrom = ArangoClusterDefault.DBSERVER_PORT_DEFAULT;
     private int coordinatorPortFrom = ArangoClusterDefault.COORDINATOR_PORT_DEFAULT;
 
     private String version = ArangoContainer.VERSION_DEFAULT;
-    private boolean exposeAgencyNodes = false;
+    private boolean exposeAgentNodes = false;
     private boolean exposeDBServerNodes = false;
 
     private ArangoClusterBuilder() {}
 
     /**
-     * Exposes {@link NodeType#AGENCY} nodes ports as specified per builder configuration
+     * Exposes {@link NodeType#AGENT} nodes ports as specified per builder configuration
      * 
      * @return self
      */
-    public ArangoClusterBuilder withExposedAgencyNodes() {
-        this.exposeAgencyNodes = true;
+    public ArangoClusterBuilder withExposedAgentNodes() {
+        this.exposeAgentNodes = true;
         return this;
     }
 
@@ -62,11 +62,11 @@ public class ArangoClusterBuilder {
     }
 
     /**
-     * @param agencyNodes amount of {@link NodeType#AGENCY} nodes to create in cluster
+     * @param agentNodes amount of {@link NodeType#AGENT} nodes to create in cluster
      * @return self
      */
-    public ArangoClusterBuilder withAgencyNodes(int agencyNodes) {
-        this.agencyNodes = agencyNodes;
+    public ArangoClusterBuilder withAgentNodes(int agentNodes) {
+        this.agentNodes = agentNodes;
         return this;
     }
 
@@ -89,11 +89,11 @@ public class ArangoClusterBuilder {
     }
 
     /**
-     * @param agencyPortFrom port to start exposing {@link NodeType#AGENCY} nodes
+     * @param agentPortFrom port to start exposing {@link NodeType#AGENT} nodes
      * @return self
      */
-    public ArangoClusterBuilder withAgencyPortFrom(int agencyPortFrom) {
-        this.agencyPortFrom = agencyPortFrom;
+    public ArangoClusterBuilder withAgentPortFrom(int agentPortFrom) {
+        this.agentPortFrom = agentPortFrom;
         return this;
     }
 
@@ -135,49 +135,49 @@ public class ArangoClusterBuilder {
     }
 
     public List<ArangoClusterContainer> build(Network network) {
-        if (agencyNodes % 2 != 1)
-            throw new UnsupportedOperationException("Agency nodes must be odd number!");
+        if (agentNodes % 2 != 1)
+            throw new UnsupportedOperationException("Agent nodes must be odd number!");
 
         if (StringUtils.isBlank(version))
             throw new UnsupportedOperationException("Image version can not be empty!");
 
-        final List<ArangoClusterContainer> agencies = new ArrayList<>(agencyNodes);
+        final List<ArangoClusterContainer> agents = new ArrayList<>(agentNodes);
         final List<ArangoClusterContainer> databases = new ArrayList<>(databaseNodes);
         final List<ArangoClusterContainer> coordinators = new ArrayList<>(coordinatorNodes);
 
         ArangoClusterContainer leader = null;
 
         // Build agencies
-        for (int i = 0; i < agencyNodes; i++) {
-            final String alias = AGENCY.getAlias(i);
-            final int port = agencyPortFrom + i;
+        for (int i = 0; i < agentNodes; i++) {
+            final String alias = AGENT.getAlias(i);
+            final int port = agentPortFrom + i;
             if (i == 0) {
-                leader = ArangoClusterContainer.agency(alias, port, version, agencyNodes, true, exposeAgencyNodes);
-                leader.withAgencyEndpoints(singletonList(leader.getEndpoint()));
-                agencies.add(leader);
+                leader = ArangoClusterContainer.agent(alias, port, version, agentNodes, true, exposeAgentNodes);
+                leader.withAgentEndpoints(singletonList(leader.getEndpoint()));
+                agents.add(leader);
             } else {
                 // Add agency dependency and endpoint of leader agency
-                final ArangoClusterContainer agency = (ArangoClusterContainer) ArangoClusterContainer
-                        .agency(alias, port, version, agencyNodes, false, exposeAgencyNodes)
-                        .withAgencyEndpoints(singletonList(leader.getEndpoint()))
+                final ArangoClusterContainer agent = (ArangoClusterContainer) ArangoClusterContainer
+                        .agent(alias, port, version, agentNodes, false, exposeAgentNodes)
+                        .withAgentEndpoints(singletonList(leader.getEndpoint()))
                         .dependsOn(leader);
-                agencies.add(agency);
+                agents.add(agent);
             }
         }
 
-        final List<String> agencyEndpoints = agencies.stream()
+        final List<String> agentEndpoints = agents.stream()
                 .map(ArangoClusterContainer::getEndpoint)
                 .collect(Collectors.toList());
 
         // Create database nodes
-        final List<Startable> databaseDependsOn = new ArrayList<>(agencies);
+        final List<Startable> databaseDependsOn = new ArrayList<>(agents);
 
         // Build agencies
         for (int i = 0; i < databaseNodes; i++) {
             final String alias = DBSERVER.getAlias(i);
             final int port = dbserverPortFrom + i;
             final ArangoContainer database = ArangoClusterContainer.dbserver(alias, port, version, exposeDBServerNodes)
-                    .withAgencyEndpoints(agencyEndpoints)
+                    .withAgentEndpoints(agentEndpoints)
                     .dependsOn(databaseDependsOn);
             databases.add((ArangoClusterContainer) database);
         }
@@ -190,12 +190,12 @@ public class ArangoClusterBuilder {
             final String alias = COORDINATOR.getAlias(i);
             final int port = coordinatorPortFrom + i;
             final ArangoContainer coordinator = ArangoClusterContainer.coordinator(alias, port, version)
-                    .withAgencyEndpoints(agencyEndpoints)
+                    .withAgentEndpoints(agentEndpoints)
                     .dependsOn(coordinatorDependsOn);
             coordinators.add((ArangoClusterContainer) coordinator);
         }
 
-        return Stream.of(agencies, databases, coordinators)
+        return Stream.of(agents, databases, coordinators)
                 .flatMap(Collection::stream)
                 .map(c -> ((ArangoClusterContainer) c.withNetwork(network)))
                 .sorted(Comparator.comparing(ArangoClusterContainer::getType))

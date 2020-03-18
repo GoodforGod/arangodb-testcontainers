@@ -26,16 +26,16 @@ class ArangoClusterBuilderExposedTests extends ArangoRunner {
     private static List<ArangoClusterContainer> clusterNodes = ArangoClusterBuilder.builder()
             .withCoordinatorNodes(3)
             .withDatabaseNodes(3)
-            .withExposedAgencyNodes()
+            .withExposedAgentNodes()
             .withExposedDBServerNodes()
             .build();
 
     @Container
-    private static final ArangoClusterContainer agency1 = clusterNodes.get(0);
+    private static final ArangoClusterContainer agent1 = clusterNodes.get(0);
     @Container
-    private static final ArangoClusterContainer agency2 = clusterNodes.get(1);
+    private static final ArangoClusterContainer agent2 = clusterNodes.get(1);
     @Container
-    private static final ArangoClusterContainer agency3 = clusterNodes.get(2);
+    private static final ArangoClusterContainer agent3 = clusterNodes.get(2);
 
     @Container
     private static final ArangoClusterContainer db1 = clusterNodes.get(3);
@@ -53,13 +53,13 @@ class ArangoClusterBuilderExposedTests extends ArangoRunner {
 
     @Test
     void allCoordinatorsAreAccessible() throws IOException {
-        assertEquals(ArangoClusterContainer.NodeType.AGENCY_LEADER, agency1.getType());
-        assertEquals(ArangoClusterContainer.NodeType.AGENCY, agency2.getType());
-        assertEquals(ArangoClusterContainer.NodeType.AGENCY, agency3.getType());
+        assertEquals(ArangoClusterContainer.NodeType.AGENT_LEADER, agent1.getType());
+        assertEquals(ArangoClusterContainer.NodeType.AGENT, agent2.getType());
+        assertEquals(ArangoClusterContainer.NodeType.AGENT, agent3.getType());
 
-        assertTrue(agency1.isRunning());
-        assertTrue(agency2.isRunning());
-        assertTrue(agency3.isRunning());
+        assertTrue(agent1.isRunning());
+        assertTrue(agent2.isRunning());
+        assertTrue(agent3.isRunning());
         assertTrue(db1.isRunning());
         assertTrue(db2.isRunning());
         assertTrue(db3.isRunning());
@@ -67,9 +67,9 @@ class ArangoClusterBuilderExposedTests extends ArangoRunner {
         assertTrue(coordinator2.isRunning());
         assertTrue(coordinator3.isRunning());
 
-        assertTrue(agency1.getExposedPorts().contains(AGENCY_PORT_DEFAULT));
-        assertTrue(agency2.getExposedPorts().contains(AGENCY_PORT_DEFAULT + 1));
-        assertTrue(agency3.getExposedPorts().contains(AGENCY_PORT_DEFAULT + 2));
+        assertTrue(agent1.getExposedPorts().contains(AGENCY_PORT_DEFAULT));
+        assertTrue(agent2.getExposedPorts().contains(AGENCY_PORT_DEFAULT + 1));
+        assertTrue(agent3.getExposedPorts().contains(AGENCY_PORT_DEFAULT + 2));
         assertTrue(db1.getExposedPorts().contains(DBSERVER_PORT_DEFAULT));
         assertTrue(db2.getExposedPorts().contains(DBSERVER_PORT_DEFAULT + 1));
         assertTrue(db3.getExposedPorts().contains(DBSERVER_PORT_DEFAULT + 2));

@@ -24,11 +24,11 @@ class ArangoClusterDefaultTests extends ArangoRunner {
     private static ArangoClusterDefault clusterDefault = ArangoClusterDefault.build();
 
     @Container
-    private static final ArangoClusterContainer agency1 = clusterDefault.getAgency1();
+    private static final ArangoClusterContainer agent1 = clusterDefault.getAgent1();
     @Container
-    private static final ArangoClusterContainer agency2 = clusterDefault.getAgency2();
+    private static final ArangoClusterContainer agent2 = clusterDefault.getAgent2();
     @Container
-    private static final ArangoClusterContainer agency3 = clusterDefault.getAgency3();
+    private static final ArangoClusterContainer agent3 = clusterDefault.getAgent3();
     @Container
     private static final ArangoClusterContainer db1 = clusterDefault.getDatabase1();
     @Container
@@ -40,13 +40,13 @@ class ArangoClusterDefaultTests extends ArangoRunner {
 
     @Test
     void allCoordinatorsAreAccessible() throws IOException {
-        assertEquals(ArangoClusterContainer.NodeType.AGENCY_LEADER, agency1.getType());
-        assertEquals(ArangoClusterContainer.NodeType.AGENCY, agency2.getType());
-        assertEquals(ArangoClusterContainer.NodeType.AGENCY, agency3.getType());
+        assertEquals(ArangoClusterContainer.NodeType.AGENT_LEADER, agent1.getType());
+        assertEquals(ArangoClusterContainer.NodeType.AGENT, agent2.getType());
+        assertEquals(ArangoClusterContainer.NodeType.AGENT, agent3.getType());
 
-        assertTrue(agency1.isRunning());
-        assertTrue(agency2.isRunning());
-        assertTrue(agency3.isRunning());
+        assertTrue(agent1.isRunning());
+        assertTrue(agent2.isRunning());
+        assertTrue(agent3.isRunning());
         assertTrue(db1.isRunning());
         assertTrue(db2.isRunning());
         assertTrue(coordinator1.isRunning());
