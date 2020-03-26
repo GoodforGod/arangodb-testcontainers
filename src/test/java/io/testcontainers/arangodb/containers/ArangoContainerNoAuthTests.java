@@ -1,5 +1,6 @@
 package io.testcontainers.arangodb.containers;
 
+import io.testcontainers.arangodb.ArangoRunner;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -17,7 +18,7 @@ import java.net.URL;
 class ArangoContainerNoAuthTests extends ArangoRunner {
 
     @Container
-    private static final ArangoContainer container = new ArangoContainer().withoutAuthentication();
+    private static final ArangoContainer container = new ArangoContainer().withoutAuth();
 
     @Test
     void checkThatDatabaseIsRunningForDefaultConfig() throws Exception {

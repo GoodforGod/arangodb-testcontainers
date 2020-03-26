@@ -1,10 +1,12 @@
-package io.testcontainers.arangodb.containers;
+package io.testcontainers.arangodb;
 
+import io.testcontainers.arangodb.containers.ArangoContainer;
 import org.junit.jupiter.api.Assertions;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -15,8 +17,12 @@ import java.net.URL;
  */
 public abstract class ArangoRunner extends Assertions {
 
-    protected URL getCheckUrl(ArangoContainer container) throws Exception {
-        return new URL("http://" + container.getHost() + ":" + container.getPort() + "/_api/collection");
+    protected URL getCheckUrl(ArangoContainer container) {
+        try {
+            return new URL("http://" + container.getHost() + ":" + container.getPort() + "/_api/collection");
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     protected String getResponse(HttpURLConnection connection) {
@@ -26,7 +32,10 @@ public abstract class ArangoRunner extends Assertions {
             while ((inputLine = in.readLine()) != null) {
                 builder.append(inputLine);
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
+
         return builder.toString();
     }
 }
