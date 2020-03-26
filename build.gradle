@@ -84,9 +84,9 @@ publishing {
             artifact javadocJar
 
             pom {
-                name = 'ArangoDB TestContainer'
+                name = 'ArangoDB TestContainers'
                 url = 'https://github.com/GoodforGod/arangodb-testcontainer'
-                description = 'This is ArangoDB TestContainer implementation (with TestContainer startup strategy support and cluster setup)'
+                description = 'This is ArangoDB TestContainers implementation (with TestContainer startup strategy support and cluster setup)'
 
                 license {
                     name = 'MIT License'

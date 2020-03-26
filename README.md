@@ -228,10 +228,10 @@ You can check each container type via specified cluster container method.
 
 ```java
 final List<ArangoClusterContainer> clusterNodes = ArangoClusterBuilder.builder()
-            .withCoordinatorNodes(3) // 3 coordinator nodes in cluster
-            .withDatabaseNodes(3) // 3 dbserver nodes in cluster
-            .withExposedAgentNodes() // expose agent nodes (not exposed by default)
-            .withExposedDBServerNodes() // exposes dbserver nodes (not exposed by default)
+            .withCoordinatorNodes(3)        // 3 coordinator nodes in cluster
+            .withDatabaseNodes(3)           // 3 dbserver nodes in cluster
+            .withExposedAgentNodes()        // expose agent nodes (not exposed by default)
+            .withExposedDBServerNodes()     // exposes dbserver nodes (not exposed by default)
             .build();
 ```
 
