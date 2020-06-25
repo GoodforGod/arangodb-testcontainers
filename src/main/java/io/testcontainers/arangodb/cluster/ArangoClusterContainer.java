@@ -52,11 +52,6 @@ public class ArangoClusterContainer extends ArangoContainer {
     }
 
     @Override
-    protected ArangoContainer withContainerPort(Integer port) {
-        return super.withContainerPort(port);
-    }
-
-    @Override
     protected Consumer<OutputFrame> getOutputConsumer() {
         return new Slf4jLogConsumer(LoggerFactory.getLogger(getClass().getName() + " (" + type + ")"));
     }
@@ -135,7 +130,7 @@ public class ArangoClusterContainer extends ArangoContainer {
 
     private static ArangoClusterContainer build(String version, String cmd, String networkAliasName, int port, boolean expose) {
         final ArangoClusterContainer container = (ArangoClusterContainer) new ArangoClusterContainer(version)
-                .withContainerPort(port).withPort(port)
+                .withPort(port)
                 .withoutAuth()
                 .withNetworkAliases(networkAliasName)
                 .withCommand(cmd);
