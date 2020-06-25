@@ -237,7 +237,7 @@ final List<ArangoClusterContainer> clusterNodes = ArangoClusterBuilder.builder()
 w
 ## Versions
 
-**1.2.0** - TestContainers Jupiter dependency hidden from exposure (add separately), other minor improvements.
+**1.2.0** - TestContainers Jupiter dependency hidden from exposure (add separately), random port mapping option, other minor improvements.
 
 **1.1.0** - Arango Cluster Containers, Arango Cluster Builder, improved ArangoContainer.
 

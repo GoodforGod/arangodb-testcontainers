@@ -29,7 +29,6 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
 
     private String password;
     private Integer port = PORT_DEFAULT;
-    private Integer containerPort = PORT_DEFAULT;
 
     public ArangoContainer() {
         this(VERSION_DEFAULT);
@@ -43,18 +42,13 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
         return new Slf4jLogConsumer(LoggerFactory.getLogger(getClass()));
     }
 
-    protected ArangoContainer withContainerPort(Integer port) {
-        this.containerPort = port;
-        return this;
-    }
-
     /**
      * Configures startup strategy to single TestContainer framework that container is ready to accept connections
      */
     @Override
     protected void configure() {
-        if (port != null && containerPort != null)
-            addFixedExposedPort(port, containerPort);
+        if (port != null)
+            addFixedExposedPort(port, PORT_DEFAULT);
 
         withLogConsumer(getOutputConsumer());
         waitingFor(Wait.forLogMessage(".*is ready for business. Have fun!.*\\n", 1));
@@ -118,6 +112,16 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
      */
     public ArangoContainer withPort(Integer port) {
         this.port = port;
+        return self();
+    }
+
+    /**
+     * Turns off fixed port mapping and maps container to random host port.
+     *
+     * @return container self
+     */
+    public ArangoContainer withRandomPort() {
+        this.port = null;
         return self();
     }
 

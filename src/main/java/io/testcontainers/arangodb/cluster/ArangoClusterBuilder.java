@@ -2,9 +2,9 @@ package io.testcontainers.arangodb.cluster;
 
 import io.testcontainers.arangodb.cluster.ArangoClusterContainer.NodeType;
 import io.testcontainers.arangodb.containers.ArangoContainer;
-import org.junit.platform.commons.util.StringUtils;
 import org.testcontainers.containers.Network;
 import org.testcontainers.lifecycle.Startable;
+import org.testcontainers.shaded.org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
