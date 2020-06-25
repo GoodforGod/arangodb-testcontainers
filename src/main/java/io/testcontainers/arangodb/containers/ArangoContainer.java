@@ -110,7 +110,7 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
     }
 
     /**
-     * Specify container port to run as istead of default one
+     * Specify container port to run as instead of default one
      *
      * @param port to set for container to run at
      * @return container itself
