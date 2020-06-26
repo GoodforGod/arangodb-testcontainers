@@ -51,7 +51,7 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
             addFixedExposedPort(port, PORT_DEFAULT);
 
         withLogConsumer(getOutputConsumer());
-        waitingFor(Wait.forLogMessage(".*is ready for business. Have fun!.*\\n", 1));
+        waitingFor(Wait.forLogMessage(".*is ready for business. Have fun!.*", 1));
     }
 
     /**

@@ -80,7 +80,7 @@ public class ArangoClusterContainer extends ArangoContainer {
     protected static ArangoClusterContainer agent(String alias, int port, String version, int totalAgentNodes,
                                                   boolean leader, boolean expose) {
         final StringJoiner cmd = new StringJoiner(" ");
-        final String endpoint = "tcp://" + alias + ":" + port;
+        final String endpoint = "tcp://" + alias + ":" + ArangoContainer.PORT_DEFAULT;
         cmd.add("arangod")
                 .add("--server.authentication=false")
                 .add("--server.endpoint").add("tcp://0.0.0.0:" + ArangoContainer.PORT_DEFAULT)
@@ -98,7 +98,7 @@ public class ArangoClusterContainer extends ArangoContainer {
 
     protected static ArangoClusterContainer dbserver(String alias, int port, String version, boolean expose) {
         final StringJoiner cmd = new StringJoiner(" ");
-        final String endpoint = "tcp://" + alias + ":" + port;
+        final String endpoint = "tcp://" + alias + ":" + ArangoContainer.PORT_DEFAULT;
         cmd.add("arangod")
                 .add("--server.authentication=false")
                 .add("--server.endpoint").add("tcp://0.0.0.0:" + ArangoContainer.PORT_DEFAULT)
@@ -114,7 +114,7 @@ public class ArangoClusterContainer extends ArangoContainer {
 
     protected static ArangoClusterContainer coordinator(String alias, int port, String version) {
         final StringJoiner cmd = new StringJoiner(" ");
-        final String endpoint = "tcp://" + alias + ":" + port;
+        final String endpoint = "tcp://" + alias + ":" + ArangoContainer.PORT_DEFAULT;
         cmd.add("arangod")
                 .add("--server.authentication=false")
                 .add("--server.endpoint").add("tcp://0.0.0.0:" + ArangoContainer.PORT_DEFAULT)
@@ -136,7 +136,7 @@ public class ArangoClusterContainer extends ArangoContainer {
                 .withCommand(cmd);
 
         return (expose)
-                ? (ArangoClusterContainer) container.withExposedPorts(port)
-                : container;
+                ? container
+                : (ArangoClusterContainer) container.withRandomPort();
     }
 }
