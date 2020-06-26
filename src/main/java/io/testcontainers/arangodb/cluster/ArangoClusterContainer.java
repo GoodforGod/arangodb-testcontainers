@@ -83,7 +83,7 @@ public class ArangoClusterContainer extends ArangoContainer {
         final String endpoint = "tcp://" + alias + ":" + port;
         cmd.add("arangod")
                 .add("--server.authentication=false")
-                .add("--server.endpoint").add("tcp://0.0.0.0:" + port)
+                .add("--server.endpoint").add("tcp://0.0.0.0:" + ArangoContainer.PORT_DEFAULT)
                 .add("--agency.my-address").add(endpoint)
                 .add("--agency.activate true")
                 .add("--agency.size").add(String.valueOf(totalAgentNodes))
@@ -101,7 +101,7 @@ public class ArangoClusterContainer extends ArangoContainer {
         final String endpoint = "tcp://" + alias + ":" + port;
         cmd.add("arangod")
                 .add("--server.authentication=false")
-                .add("--server.endpoint").add("tcp://0.0.0.0:" + port)
+                .add("--server.endpoint").add("tcp://0.0.0.0:" + ArangoContainer.PORT_DEFAULT)
                 .add("--cluster.my-address").add(endpoint)
                 .add("--cluster.my-role DBSERVER")
                 .add("--database.directory").add(alias);
@@ -117,7 +117,7 @@ public class ArangoClusterContainer extends ArangoContainer {
         final String endpoint = "tcp://" + alias + ":" + port;
         cmd.add("arangod")
                 .add("--server.authentication=false")
-                .add("--server.endpoint").add("tcp://0.0.0.0:" + port)
+                .add("--server.endpoint").add("tcp://0.0.0.0:" + ArangoContainer.PORT_DEFAULT)
                 .add("--cluster.my-address").add(endpoint)
                 .add("--cluster.my-role COORDINATOR")
                 .add("--database.directory").add(alias);
