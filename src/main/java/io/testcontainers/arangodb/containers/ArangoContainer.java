@@ -19,7 +19,6 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
     public static final String VERSION_DEFAULT = "latest";
     private static final String IMAGE = "arangodb";
 
-    public static final String HOST = "localhost";
     public static final Integer PORT_DEFAULT = 8529;
     public static final String ROOT_USER = "root";
 
@@ -127,10 +126,6 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
 
     public String getUser() {
         return ROOT_USER;
-    }
-
-    public String getHost() {
-        return HOST;
     }
 
     private void throwAuthException() {

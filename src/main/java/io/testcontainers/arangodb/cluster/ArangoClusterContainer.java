@@ -53,11 +53,11 @@ public class ArangoClusterContainer extends ArangoContainer {
 
     @Override
     protected Consumer<OutputFrame> getOutputConsumer() {
-        return new Slf4jLogConsumer(LoggerFactory.getLogger(getClass().getName() + " (" + type + ")"));
+        return new Slf4jLogConsumer(LoggerFactory.getLogger(getClass().getName() + " [" + type + "]"));
     }
 
     protected ArangoClusterContainer withAgentEndpoints(Collection<String> agentEndpoints) {
-        final String prefix = (NodeType.AGENT.equals(type) || NodeType.AGENT_LEADER.equals(type))
+        final String prefix = NodeType.AGENT.equals(type) || NodeType.AGENT_LEADER.equals(type)
                 ? "--agency.endpoint"
                 : "--cluster.agency-endpoint";
 
@@ -79,16 +79,12 @@ public class ArangoClusterContainer extends ArangoContainer {
 
     protected static ArangoClusterContainer agent(String alias, int port, String version, int totalAgentNodes,
                                                   boolean leader, boolean expose) {
-        final StringJoiner cmd = new StringJoiner(" ");
-        final String endpoint = "tcp://" + alias + ":" + ArangoContainer.PORT_DEFAULT;
-        cmd.add("arangod")
-                .add("--server.authentication=false")
-                .add("--server.endpoint").add("tcp://0.0.0.0:" + ArangoContainer.PORT_DEFAULT)
+        final String endpoint = getEndpoint(alias);
+        final StringJoiner cmd = getCommonCommand(alias)
                 .add("--agency.my-address").add(endpoint)
                 .add("--agency.activate true")
                 .add("--agency.size").add(String.valueOf(totalAgentNodes))
-                .add("--agency.supervision true")
-                .add("--database.directory").add(alias);
+                .add("--agency.supervision true");
 
         final ArangoClusterContainer container = build(version, cmd.toString(), alias, port, expose);
         container.type = (leader) ? NodeType.AGENT_LEADER : NodeType.AGENT;
@@ -97,12 +93,8 @@ public class ArangoClusterContainer extends ArangoContainer {
     }
 
     protected static ArangoClusterContainer dbserver(String alias, int port, String version, boolean expose) {
-        final StringJoiner cmd = new StringJoiner(" ");
-        final String endpoint = "tcp://" + alias + ":" + ArangoContainer.PORT_DEFAULT;
-        cmd.add("arangod")
-                .add("--server.authentication=false")
-                .add("--server.endpoint").add("tcp://0.0.0.0:" + ArangoContainer.PORT_DEFAULT)
-                .add("--cluster.my-address").add(endpoint)
+        final String endpoint = getEndpoint(alias);
+        final StringJoiner cmd = getCommonCommand(alias)
                 .add("--cluster.my-role DBSERVER")
                 .add("--database.directory").add(alias);
 
@@ -113,19 +105,27 @@ public class ArangoClusterContainer extends ArangoContainer {
     }
 
     protected static ArangoClusterContainer coordinator(String alias, int port, String version) {
-        final StringJoiner cmd = new StringJoiner(" ");
-        final String endpoint = "tcp://" + alias + ":" + ArangoContainer.PORT_DEFAULT;
-        cmd.add("arangod")
-                .add("--server.authentication=false")
-                .add("--server.endpoint").add("tcp://0.0.0.0:" + ArangoContainer.PORT_DEFAULT)
-                .add("--cluster.my-address").add(endpoint)
+        final String endpoint = getEndpoint(alias);
+        final StringJoiner cmd = getCommonCommand(alias)
                 .add("--cluster.my-role COORDINATOR")
-                .add("--database.directory").add(alias);
+                .add("--cluster.my-address").add(endpoint);
 
         final ArangoClusterContainer container = build(version, cmd.toString(), alias, port, true);
         container.endpoint = endpoint;
         container.type = NodeType.COORDINATOR;
         return container;
+    }
+
+    private static StringJoiner getCommonCommand(String alias) {
+        final StringJoiner cmd = new StringJoiner(" ");
+        return cmd.add("arangod")
+                .add("--server.authentication=false")
+                .add("--server.endpoint").add("tcp://0.0.0.0:" + ArangoContainer.PORT_DEFAULT)
+                .add("--database.directory").add(alias);
+    }
+
+    private static String getEndpoint(String alias) {
+        return "tcp://" + alias + ":" + ArangoContainer.PORT_DEFAULT;
     }
 
     private static ArangoClusterContainer build(String version, String cmd, String networkAliasName, int port, boolean expose) {
