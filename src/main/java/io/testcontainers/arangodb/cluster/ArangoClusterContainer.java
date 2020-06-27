@@ -96,7 +96,7 @@ public class ArangoClusterContainer extends ArangoContainer {
         final String endpoint = getEndpoint(alias);
         final StringJoiner cmd = getCommonCommand(alias)
                 .add("--cluster.my-role DBSERVER")
-                .add("--database.directory").add(alias);
+                .add("--cluster.my-address").add(endpoint);
 
         final ArangoClusterContainer container = build(version, cmd.toString(), alias, port, expose);
         container.endpoint = endpoint;
