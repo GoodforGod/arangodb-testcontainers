@@ -67,12 +67,12 @@ class ArangoClusterBuilderExposedTests extends ArangoRunner {
         assertTrue(coordinator2.isRunning());
         assertTrue(coordinator3.isRunning());
 
-        assertTrue(agent1.getExposedPorts().contains(AGENCY_PORT_DEFAULT));
-        assertTrue(agent2.getExposedPorts().contains(AGENCY_PORT_DEFAULT + 1));
-        assertTrue(agent3.getExposedPorts().contains(AGENCY_PORT_DEFAULT + 2));
-        assertTrue(db1.getExposedPorts().contains(DBSERVER_PORT_DEFAULT));
-        assertTrue(db2.getExposedPorts().contains(DBSERVER_PORT_DEFAULT + 1));
-        assertTrue(db3.getExposedPorts().contains(DBSERVER_PORT_DEFAULT + 2));
+        assertTrue(agent1.getBoundPortNumbers().contains(AGENCY_PORT_DEFAULT));
+        assertTrue(agent2.getBoundPortNumbers().contains(AGENCY_PORT_DEFAULT + 1));
+        assertTrue(agent3.getBoundPortNumbers().contains(AGENCY_PORT_DEFAULT + 2));
+        assertTrue(db1.getBoundPortNumbers().contains(DBSERVER_PORT_DEFAULT));
+        assertTrue(db2.getBoundPortNumbers().contains(DBSERVER_PORT_DEFAULT + 1));
+        assertTrue(db3.getBoundPortNumbers().contains(DBSERVER_PORT_DEFAULT + 2));
 
         for (ArangoContainer coordinator : Arrays.asList(coordinator1, coordinator2, coordinator3)) {
             final URL url = getCheckUrl(coordinator);

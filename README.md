@@ -13,7 +13,7 @@ Run *ArangoDB* or **ArangoDB Cluster** as container in your Java\Kotlin tests vi
 **Gradle**
 ```groovy
 dependencies {
-    compile 'com.github.goodforgod:arangodb-testcontainer:1.1.0'
+    compile 'com.github.goodforgod:arangodb-testcontainer:1.2.0'
 }
 ```
 
@@ -22,7 +22,7 @@ dependencies {
 <dependency>
     <groupId>com.github.goodforgod</groupId>
     <artifactId>arangodb-testcontainer</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
@@ -234,8 +234,10 @@ final List<ArangoClusterContainer> clusterNodes = ArangoClusterBuilder.builder()
             .withExposedDBServerNodes()     // exposes dbserver nodes (not exposed by default)
             .build();
 ```
-
+w
 ## Versions
+
+**1.2.0** - TestContainers Jupiter dependency hidden from exposure (add separately), random port mapping option, other minor improvements.
 
 **1.1.0** - Arango Cluster Containers, Arango Cluster Builder, improved ArangoContainer.
 
@@ -243,5 +245,5 @@ final List<ArangoClusterContainer> clusterNodes = ArangoClusterBuilder.builder()
 
 ## License
 
-This project is licensed under the MIT - see the [LICENSE](LICENSE) file for details.
+This project licensed under the MIT - see the [LICENSE](LICENSE) file for details.
 

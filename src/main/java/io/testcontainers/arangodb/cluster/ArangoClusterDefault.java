@@ -46,7 +46,7 @@ public class ArangoClusterDefault {
     /**
      * ArangoDB image version
      * 
-     * @param version for iamges
+     * @param version for images
      * @return self
      */
     public static ArangoClusterDefault build(String version) {

@@ -19,7 +19,6 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
     public static final String VERSION_DEFAULT = "latest";
     private static final String IMAGE = "arangodb";
 
-    public static final String HOST = "localhost";
     public static final Integer PORT_DEFAULT = 8529;
     public static final String ROOT_USER = "root";
 
@@ -29,7 +28,6 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
 
     private String password;
     private Integer port = PORT_DEFAULT;
-    private Integer containerPort = PORT_DEFAULT;
 
     public ArangoContainer() {
         this(VERSION_DEFAULT);
@@ -43,21 +41,16 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
         return new Slf4jLogConsumer(LoggerFactory.getLogger(getClass()));
     }
 
-    protected ArangoContainer withContainerPort(Integer port) {
-        this.containerPort = port;
-        return this;
-    }
-
     /**
      * Configures startup strategy to single TestContainer framework that container is ready to accept connections
      */
     @Override
     protected void configure() {
-        if (port != null && containerPort != null)
-            addFixedExposedPort(port, containerPort);
+        if (port != null)
+            addFixedExposedPort(port, PORT_DEFAULT);
 
         withLogConsumer(getOutputConsumer());
-        waitingFor(Wait.forLogMessage(".*is ready for business. Have fun!.*\\n", 1));
+        waitingFor(Wait.forLogMessage(".*is ready for business. Have fun!.*", 1));
     }
 
     /**
@@ -110,7 +103,7 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
     }
 
     /**
-     * Specify container port to run as istead of default one
+     * Specify container port to run as instead of default one
      *
      * @param port to set for container to run at
      * @return container itself
@@ -121,12 +114,18 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
         return self();
     }
 
-    public String getUser() {
-        return ROOT_USER;
+    /**
+     * Turns off fixed port mapping and maps container to random host port.
+     *
+     * @return container self
+     */
+    public ArangoContainer withRandomPort() {
+        this.port = null;
+        return self();
     }
 
-    public String getHost() {
-        return HOST;
+    public String getUser() {
+        return ROOT_USER;
     }
 
     private void throwAuthException() {
