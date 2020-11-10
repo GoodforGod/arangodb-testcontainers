@@ -27,7 +27,6 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
     private static final String ARANGO_RANDOM_ROOT_PASSWORD = "ARANGO_RANDOM_ROOT_PASSWORD";
 
     private String password;
-    private Integer port = PORT_DEFAULT;
 
     public ArangoContainer() {
         this(VERSION_DEFAULT);
@@ -46,9 +45,6 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
      */
     @Override
     protected void configure() {
-        if (port != null)
-            addFixedExposedPort(port, PORT_DEFAULT);
-
         withLogConsumer(getOutputConsumer());
         waitingFor(Wait.forLogMessage(".*is ready for business. Have fun!.*", 1));
     }
@@ -98,8 +94,12 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
         return password;
     }
 
+    public String getUser() {
+        return ROOT_USER;
+    }
+
     public Integer getPort() {
-        return port;
+        return getMappedPort(PORT_DEFAULT);
     }
 
     /**
@@ -109,8 +109,8 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
      * @return container itself
      * @see #PORT_DEFAULT
      */
-    public ArangoContainer withPort(Integer port) {
-        this.port = port;
+    public ArangoContainer withFixedPort(int port) {
+        addFixedExposedPort(port, PORT_DEFAULT);
         return self();
     }
 
@@ -120,12 +120,7 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
      * @return container self
      */
     public ArangoContainer withRandomPort() {
-        this.port = null;
         return self();
-    }
-
-    public String getUser() {
-        return ROOT_USER;
     }
 
     private void throwAuthException() {

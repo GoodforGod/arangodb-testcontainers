@@ -15,12 +15,12 @@ import java.net.URL;
  * @since 2.3.2020
  */
 @Testcontainers
-class ArangoContainerSetPortTests extends ArangoRunner {
+class ArangoContainerFixedPortTests extends ArangoRunner {
 
     private static final int PORT = 8233;
 
     @Container
-    private static final ArangoContainer container = new ArangoContainer().withoutAuth().withPort(PORT);
+    private static final ArangoContainer container = new ArangoContainer().withoutAuth().withFixedPort(PORT);
 
     @Test
     void checkThatDatabaseIsRunning() throws Exception {
@@ -28,6 +28,7 @@ class ArangoContainerSetPortTests extends ArangoRunner {
         assertTrue(running);
 
         final URL url = getCheckUrl(container);
+        assertEquals(PORT, container.getPort());
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setConnectTimeout(5000);

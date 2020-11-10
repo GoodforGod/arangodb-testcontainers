@@ -130,7 +130,7 @@ public class ArangoClusterContainer extends ArangoContainer {
 
     private static ArangoClusterContainer build(String version, String cmd, String networkAliasName, int port, boolean expose) {
         final ArangoClusterContainer container = (ArangoClusterContainer) new ArangoClusterContainer(version)
-                .withPort(port)
+                .withFixedPort(port)
                 .withoutAuth()
                 .withNetworkAliases(networkAliasName)
                 .withCommand(cmd);
