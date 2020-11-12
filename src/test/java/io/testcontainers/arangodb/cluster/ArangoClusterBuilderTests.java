@@ -23,31 +23,31 @@ import static io.testcontainers.arangodb.cluster.ArangoClusterDefault.*;
 @Testcontainers
 class ArangoClusterBuilderTests extends ArangoRunner {
 
-    private static List<ArangoClusterContainer> clusterNodes = ArangoClusterBuilder.builder()
+    private static final List<ArangoClusterContainer> CLUSTER_NODES = ArangoClusterBuilder.builder()
             .withCoordinatorNodes(3)
             .withDatabaseNodes(3)
             .build();
 
     @Container
-    private static final ArangoClusterContainer agent1 = clusterNodes.get(0);
+    private static final ArangoClusterContainer agent1 = CLUSTER_NODES.get(0);
     @Container
-    private static final ArangoClusterContainer agent2 = clusterNodes.get(1);
+    private static final ArangoClusterContainer agent2 = CLUSTER_NODES.get(1);
     @Container
-    private static final ArangoClusterContainer agent3 = clusterNodes.get(2);
+    private static final ArangoClusterContainer agent3 = CLUSTER_NODES.get(2);
 
     @Container
-    private static final ArangoClusterContainer db1 = clusterNodes.get(3);
+    private static final ArangoClusterContainer db1 = CLUSTER_NODES.get(3);
     @Container
-    private static final ArangoClusterContainer db2 = clusterNodes.get(4);
+    private static final ArangoClusterContainer db2 = CLUSTER_NODES.get(4);
     @Container
-    private static final ArangoClusterContainer db3 = clusterNodes.get(5);
+    private static final ArangoClusterContainer db3 = CLUSTER_NODES.get(5);
 
     @Container
-    private static final ArangoClusterContainer coordinator1 = clusterNodes.get(6);
+    private static final ArangoClusterContainer coordinator1 = CLUSTER_NODES.get(6);
     @Container
-    private static final ArangoClusterContainer coordinator2 = clusterNodes.get(7);
+    private static final ArangoClusterContainer coordinator2 = CLUSTER_NODES.get(7);
     @Container
-    private static final ArangoClusterContainer coordinator3 = clusterNodes.get(8);
+    private static final ArangoClusterContainer coordinator3 = CLUSTER_NODES.get(8);
 
     @Test
     void allCoordinatorsAreAccessible() throws IOException {
