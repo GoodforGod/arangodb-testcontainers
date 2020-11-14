@@ -49,6 +49,7 @@ class ArangoClusterTests extends ArangoRunner {
 
     @Test
     void allCoordinatorsAreAccessible() throws IOException {
+        assertEquals(9, CLUSTER.getNodes().size());
         assertEquals(ArangoClusterContainer.NodeType.AGENT_LEADER, CLUSTER.getAgentLeader().getType());
         assertEquals(ArangoClusterContainer.NodeType.AGENT_LEADER, agent1.getType());
         assertEquals(ArangoClusterContainer.NodeType.AGENT, agent2.getType());
@@ -64,7 +65,7 @@ class ArangoClusterTests extends ArangoRunner {
         assertTrue(coordinator2.isRunning());
         assertTrue(coordinator3.isRunning());
 
-        assertEquals(AGENCY_PORT_DEFAULT, CLUSTER.getAgentLeaderPort());
+        assertNotEquals(AGENCY_PORT_DEFAULT, CLUSTER.getAgentLeaderPort());
         assertFalse(CLUSTER.getAgentPorts().contains(AGENCY_PORT_DEFAULT));
         assertFalse(CLUSTER.getAgentPorts().contains(AGENCY_PORT_DEFAULT + 1));
         assertFalse(CLUSTER.getAgentPorts().contains(AGENCY_PORT_DEFAULT + 2));

@@ -1,9 +1,12 @@
 package io.testcontainers.arangodb.cluster;
 
 import io.testcontainers.arangodb.cluster.ArangoClusterContainer.NodeType;
+import io.testcontainers.arangodb.containers.ArangoContainer;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Anton Kurako (GoodforGod)
@@ -29,6 +32,12 @@ public class ArangoCluster {
                 .collect(Collectors.toList());
     }
 
+    public List<ArangoClusterContainer> getNodes() {
+        return Stream.of(getAgents(), getCoordinators(), getDatabases())
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
     public List<ArangoClusterContainer> getCoordinators() {
         return coordinators;
     }
@@ -45,7 +54,7 @@ public class ArangoCluster {
     }
 
     public int getAgentLeaderPort() {
-        return getAgentLeader().getBoundPortNumbers().get(0);
+        return getAgentLeader().getPort();
     }
 
     public List<ArangoClusterContainer> getAgents() {
@@ -66,19 +75,19 @@ public class ArangoCluster {
 
     public List<Integer> getCoordinatorPorts() {
         return getCoordinators().stream()
-                .flatMap(c -> c.getBoundPortNumbers().stream())
+                .map(ArangoContainer::getPort)
                 .collect(Collectors.toList());
     }
 
     public List<Integer> getAgentPorts() {
         return getCoordinators().stream()
-                .flatMap(c -> c.getBoundPortNumbers().stream())
+                .map(ArangoContainer::getPort)
                 .collect(Collectors.toList());
     }
 
     public List<Integer> getDatabasePorts() {
         return getCoordinators().stream()
-                .flatMap(c -> c.getBoundPortNumbers().stream())
+                .map(ArangoContainer::getPort)
                 .collect(Collectors.toList());
     }
 }
