@@ -6,6 +6,7 @@ import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 /**
@@ -16,7 +17,7 @@ import java.util.function.Consumer;
  */
 public class ArangoContainer extends GenericContainer<ArangoContainer> {
 
-    public static final String VERSION_DEFAULT = "latest";
+    public static final String LATEST = "latest";
     private static final String IMAGE = "arangodb";
 
     public static final Integer PORT_DEFAULT = 8529;
@@ -28,12 +29,23 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
 
     private String password;
 
+    /**
+     * This is recommended usage by TestContainers library
+     * 
+     * @see org.testcontainers.containers.GenericContainer
+     * @deprecated use {@link ArangoContainer(String)} instead
+     */
+    @Deprecated
     public ArangoContainer() {
-        this(VERSION_DEFAULT);
+        this(LATEST);
     }
 
     public ArangoContainer(String version) {
         super(IMAGE + ":" + version);
+    }
+
+    public ArangoContainer(Future<String> dockerImageName) {
+        super(dockerImageName);
     }
 
     protected Consumer<OutputFrame> getOutputConsumer() {

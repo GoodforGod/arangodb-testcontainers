@@ -13,41 +13,40 @@ import java.util.Arrays;
 import java.util.List;
 
 import static io.testcontainers.arangodb.cluster.ArangoClusterDefault.*;
+import static io.testcontainers.arangodb.containers.ArangoContainer.LATEST;
 
 /**
- * Description in progress
- *
  * @author Anton Kurako (GoodforGod)
  * @since 15.3.2020
  */
 @Testcontainers
 class ArangoClusterBuilderTests extends ArangoRunner {
 
-    private static final List<ArangoClusterContainer> CLUSTER_NODES = ArangoClusterBuilder.builder()
+    private static final List<ArangoClusterContainer> CLUSTER = ArangoClusterBuilder.builder(LATEST)
             .withCoordinatorNodes(3)
             .withDatabaseNodes(3)
-            .build();
+            .buildContainers();
 
     @Container
-    private static final ArangoClusterContainer agent1 = CLUSTER_NODES.get(0);
+    private static final ArangoClusterContainer agent1 = CLUSTER.get(0);
     @Container
-    private static final ArangoClusterContainer agent2 = CLUSTER_NODES.get(1);
+    private static final ArangoClusterContainer agent2 = CLUSTER.get(1);
     @Container
-    private static final ArangoClusterContainer agent3 = CLUSTER_NODES.get(2);
+    private static final ArangoClusterContainer agent3 = CLUSTER.get(2);
 
     @Container
-    private static final ArangoClusterContainer db1 = CLUSTER_NODES.get(3);
+    private static final ArangoClusterContainer db1 = CLUSTER.get(3);
     @Container
-    private static final ArangoClusterContainer db2 = CLUSTER_NODES.get(4);
+    private static final ArangoClusterContainer db2 = CLUSTER.get(4);
     @Container
-    private static final ArangoClusterContainer db3 = CLUSTER_NODES.get(5);
+    private static final ArangoClusterContainer db3 = CLUSTER.get(5);
 
     @Container
-    private static final ArangoClusterContainer coordinator1 = CLUSTER_NODES.get(6);
+    private static final ArangoClusterContainer coordinator1 = CLUSTER.get(6);
     @Container
-    private static final ArangoClusterContainer coordinator2 = CLUSTER_NODES.get(7);
+    private static final ArangoClusterContainer coordinator2 = CLUSTER.get(7);
     @Container
-    private static final ArangoClusterContainer coordinator3 = CLUSTER_NODES.get(8);
+    private static final ArangoClusterContainer coordinator3 = CLUSTER.get(8);
 
     @Test
     void allCoordinatorsAreAccessible() throws IOException {

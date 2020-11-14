@@ -26,10 +26,17 @@ public class ArangoClusterDefault {
     public static final int AGENCY_PORT_DEFAULT = 8500;
 
     /**
-     * Containts default number of nodes
+     * Containers default number of nodes
      */
     private final List<ArangoClusterContainer> containers;
 
+    /**
+     * This is recommended usage by TestContainers library
+     * 
+     * @see org.testcontainers.containers.GenericContainer
+     * @deprecated use {@link ArangoClusterDefault#build(String)} instead
+     */
+    @Deprecated
     public static ArangoClusterDefault build() {
         return build(COORDINATOR_PORT_DEFAULT);
     }
@@ -40,7 +47,7 @@ public class ArangoClusterDefault {
      * @return self
      */
     public static ArangoClusterDefault build(int coordinatorPortFrom) {
-        return build(COORDINATOR_PORT_DEFAULT, ArangoContainer.VERSION_DEFAULT);
+        return build(coordinatorPortFrom, ArangoContainer.LATEST);
     }
 
     /**
@@ -61,10 +68,9 @@ public class ArangoClusterDefault {
      * @return self
      */
     public static ArangoClusterDefault build(int coordinatorPortFrom, String version) {
-        return new ArangoClusterDefault(ArangoClusterBuilder.builder()
+        return new ArangoClusterDefault(ArangoClusterBuilder.builder(version)
                 .withCoordinatorPortFrom(coordinatorPortFrom)
-                .withVersion(version)
-                .build());
+                .buildContainers());
     }
 
     private ArangoClusterDefault(List<ArangoClusterContainer> containers) {
@@ -80,8 +86,12 @@ public class ArangoClusterDefault {
         return new ArrayList<>(containers);
     }
 
-    public ArangoClusterContainer getAgent1() {
+    public ArangoClusterContainer getAgentLeader() {
         return containers.get(0);
+    }
+
+    public ArangoClusterContainer getAgent1() {
+        return getAgentLeader();
     }
 
     public ArangoClusterContainer getAgent2() {

@@ -9,36 +9,43 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Arrays;
 
+import static io.testcontainers.arangodb.cluster.ArangoClusterDefault.AGENCY_PORT_DEFAULT;
+import static io.testcontainers.arangodb.cluster.ArangoClusterDefault.DBSERVER_PORT_DEFAULT;
 import static io.testcontainers.arangodb.containers.ArangoContainer.LATEST;
 
 /**
- * ArangoDB default cluster configuration tests
- * 
- * @see ArangoClusterDefault
  * @author Anton Kurako (GoodforGod)
  * @since 15.3.2020
  */
 @Testcontainers
-class ArangoClusterDefaultTests extends ArangoRunner {
+class ArangoClusterTests extends ArangoRunner {
 
-    private static final ArangoClusterDefault CLUSTER = ArangoClusterDefault.build(LATEST);
+    private static final ArangoCluster CLUSTER = ArangoClusterBuilder.builder(LATEST)
+            .withCoordinatorNodes(3)
+            .withDatabaseNodes(3)
+            .build();
 
     @Container
-    private static final ArangoClusterContainer agent1 = CLUSTER.getAgent1();
+    private static final ArangoClusterContainer agent1 = CLUSTER.getAgent(0);
     @Container
-    private static final ArangoClusterContainer agent2 = CLUSTER.getAgent2();
+    private static final ArangoClusterContainer agent2 = CLUSTER.getAgent(1);
     @Container
-    private static final ArangoClusterContainer agent3 = CLUSTER.getAgent3();
+    private static final ArangoClusterContainer agent3 = CLUSTER.getAgent(2);
+
     @Container
-    private static final ArangoClusterContainer db1 = CLUSTER.getDatabase1();
+    private static final ArangoClusterContainer db1 = CLUSTER.getDatabase(0);
     @Container
-    private static final ArangoClusterContainer db2 = CLUSTER.getDatabase2();
+    private static final ArangoClusterContainer db2 = CLUSTER.getDatabase(1);
     @Container
-    private static final ArangoClusterContainer coordinator1 = CLUSTER.getCoordinator1();
+    private static final ArangoClusterContainer db3 = CLUSTER.getDatabase(2);
+
     @Container
-    private static final ArangoClusterContainer coordinator2 = CLUSTER.getCoordinator2();
+    private static final ArangoClusterContainer coordinator1 = CLUSTER.getCoordinator(0);
+    @Container
+    private static final ArangoClusterContainer coordinator2 = CLUSTER.getCoordinator(1);
+    @Container
+    private static final ArangoClusterContainer coordinator3 = CLUSTER.getCoordinator(2);
 
     @Test
     void allCoordinatorsAreAccessible() throws IOException {
@@ -52,10 +59,20 @@ class ArangoClusterDefaultTests extends ArangoRunner {
         assertTrue(agent3.isRunning());
         assertTrue(db1.isRunning());
         assertTrue(db2.isRunning());
+        assertTrue(db3.isRunning());
         assertTrue(coordinator1.isRunning());
         assertTrue(coordinator2.isRunning());
+        assertTrue(coordinator3.isRunning());
 
-        for (ArangoContainer coordinator : Arrays.asList(coordinator1, coordinator2)) {
+        assertEquals(AGENCY_PORT_DEFAULT, CLUSTER.getAgentLeaderPort());
+        assertFalse(CLUSTER.getAgentPorts().contains(AGENCY_PORT_DEFAULT));
+        assertFalse(CLUSTER.getAgentPorts().contains(AGENCY_PORT_DEFAULT + 1));
+        assertFalse(CLUSTER.getAgentPorts().contains(AGENCY_PORT_DEFAULT + 2));
+        assertFalse(CLUSTER.getDatabasePorts().contains(DBSERVER_PORT_DEFAULT));
+        assertFalse(CLUSTER.getDatabasePorts().contains(DBSERVER_PORT_DEFAULT + 1));
+        assertFalse(CLUSTER.getDatabasePorts().contains(DBSERVER_PORT_DEFAULT + 2));
+
+        for (ArangoContainer coordinator : CLUSTER.getCoordinators()) {
             final URL url = getCheckUrl(coordinator);
             final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");

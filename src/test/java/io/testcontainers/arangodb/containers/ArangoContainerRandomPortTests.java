@@ -8,6 +8,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static io.testcontainers.arangodb.containers.ArangoContainer.LATEST;
+
 /**
  * ArangoDB TestContainer tests.
  *
@@ -18,7 +20,7 @@ import java.net.URL;
 class ArangoContainerRandomPortTests extends ArangoRunner {
 
     @Container
-    private static final ArangoContainer container = new ArangoContainer().withoutAuth().withRandomPort();
+    private static final ArangoContainer container = new ArangoContainer(LATEST).withoutAuth().withRandomPort();
 
     @Test
     void checkThatDatabaseIsRunning() throws Exception {
@@ -27,6 +29,7 @@ class ArangoContainerRandomPortTests extends ArangoRunner {
 
         final URL url = getCheckUrl(container);
         assertNotNull(container.getPort());
+        assertEquals("root", container.getUser());
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setConnectTimeout(5000);

@@ -43,10 +43,6 @@ public class ArangoClusterContainer extends ArangoContainer {
     private String endpoint;
     private NodeType type;
 
-    protected ArangoClusterContainer() {
-        super();
-    }
-
     protected ArangoClusterContainer(String version) {
         super(version);
     }

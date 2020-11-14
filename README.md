@@ -231,12 +231,23 @@ final List<ArangoClusterContainer> clusterNodes = ArangoClusterBuilder.builder()
             .withDatabaseNodes(3)           // 3 dbserver nodes in cluster
             .withExposedAgentNodes()        // expose agent nodes (not exposed by default)
             .withExposedDBServerNodes()     // exposes dbserver nodes (not exposed by default)
+            .buildContainers();
+```
+
+Or you can build cluster
+
+```java
+final ArangoCluster cluster = ArangoClusterBuilder.builder()
+            .withCoordinatorNodes(3)        // 3 coordinator nodes in cluster
+            .withDatabaseNodes(3)           // 3 dbserver nodes in cluster
+            .withExposedAgentNodes()        // expose agent nodes (not exposed by default)
+            .withExposedDBServerNodes()     // exposes dbserver nodes (not exposed by default)
             .build();
 ```
 
 ## Versions
 
-**1.3.0** - By default container runs on random port, TestContainers up to 1.15.0, withFixedPort() contract instead of just withPort().
+**1.3.0** - By default container runs on random port, TestContainers up to 1.15.0, withFixedPort() contract instead of just withPort(), ArangoCluster introduced.
 
 **1.2.0** - TestContainers Jupiter dependency hidden from exposure (add separately), random port mapping option, other minor improvements.
 

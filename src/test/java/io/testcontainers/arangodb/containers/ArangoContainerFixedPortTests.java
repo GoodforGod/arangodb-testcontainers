@@ -8,6 +8,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static io.testcontainers.arangodb.containers.ArangoContainer.LATEST;
+
 /**
  * ArangoDB TestContainer tests.
  *
@@ -20,7 +22,7 @@ class ArangoContainerFixedPortTests extends ArangoRunner {
     private static final int PORT = 8233;
 
     @Container
-    private static final ArangoContainer container = new ArangoContainer().withoutAuth().withFixedPort(PORT);
+    private static final ArangoContainer container = new ArangoContainer(LATEST).withoutAuth().withFixedPort(PORT);
 
     @Test
     void checkThatDatabaseIsRunning() throws Exception {
