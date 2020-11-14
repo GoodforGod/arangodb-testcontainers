@@ -31,7 +31,7 @@ sonarqube {
     properties {
         property 'sonar.host.url', 'https://sonarcloud.io'
         property 'sonar.organization', 'goodforgod'
-        property 'sonar.projectKey', 'GoodforGod_micronaut-swagger-api'
+        property 'sonar.projectKey', 'GoodforGod_arangodb-testcontainer'
     }
 }
 
@@ -89,7 +89,7 @@ publishing {
             pom {
                 name = 'ArangoDB TestContainers'
                 url = 'https://github.com/GoodforGod/arangodb-testcontainer'
-                description = 'This is ArangoDB TestContainers implementation (with TestContainer startup strategy support and cluster setup)'
+                description = 'ArangoDB TestContainers implementation with startup strategy and cluster containers.'
 
                 license {
                     name = 'MIT License'

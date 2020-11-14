@@ -1,11 +1,13 @@
-# ArangoDB (Cluster) TestContainers
+# ArangoDB TestContainers
 
 ![Java CI](https://github.com/GoodforGod/arangodb-testcontainer/workflows/Java%20CI/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainer&metric=alert_status)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainer)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainer&metric=coverage)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainer)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainer&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainer)
 
-This is [*ArangoDB*](https://www.arangodb.com/) [TestContainers](https://www.testcontainers.org/) implementation with proper start up strategy and even ArangoDB Cluster test containers' setup.
+This is [*ArangoDB*](https://www.arangodb.com/) 
+[TestContainers](https://www.testcontainers.org/) 
+implementation with proper start up strategy and even [ArangoDB Cluster](#cluster) containers' setup.
 
 ## Dependency :rocket:
 **Gradle**
@@ -213,7 +215,7 @@ class ArangoContainerTests {
 
 Cluster is available on **default 8529 port** as default, you can change port in builder. 
 ```java
-ArangoClusterDefault.build(int coordinatorPortFromversion)
+ArangoClusterDefault.build(int coordinatorPortFrom)
 ```
 
 ### Cluster Builder
@@ -234,7 +236,7 @@ final List<ArangoClusterContainer> clusterNodes = ArangoClusterBuilder.builder()
 
 ## Versions
 
-**1.3.0** - By default container runs on random port, withFixedPort() contract instead of just withPort().
+**1.3.0** - By default container runs on random port, TestContainers up to 1.15.0, withFixedPort() contract instead of just withPort().
 
 **1.2.0** - TestContainers Jupiter dependency hidden from exposure (add separately), random port mapping option, other minor improvements.
 
