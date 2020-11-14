@@ -130,7 +130,8 @@ public class ArangoClusterBuilder {
      * This is recommended usage by TestContainers library
      * 
      * @see org.testcontainers.containers.GenericContainer
-     * @deprecated use {@link ArangoClusterContainer(String)} instead
+     * @deprecated use {@link #builder(String)} instead
+     * @return builder for cluster
      */
     @Deprecated
     public static ArangoClusterBuilder builder() {

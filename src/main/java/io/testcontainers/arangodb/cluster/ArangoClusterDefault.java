@@ -35,6 +35,7 @@ public class ArangoClusterDefault {
      * 
      * @see org.testcontainers.containers.GenericContainer
      * @deprecated use {@link ArangoClusterDefault#build(String)} instead
+     * @return default cluster
      */
     @Deprecated
     public static ArangoClusterDefault build() {
