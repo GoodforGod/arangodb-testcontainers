@@ -1,19 +1,19 @@
-# ArangoDB (Cluster) TestContainers
+# ArangoDB TestContainers
 
 ![Java CI](https://github.com/GoodforGod/arangodb-testcontainer/workflows/Java%20CI/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainer&metric=alert_status)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainer)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainer&metric=coverage)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainer)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainer&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainer)
 
-This is [*ArangoDB*](https://www.arangodb.com/) [TestContainers](https://www.testcontainers.org/) implementation (with TestContainers startup strategy support.
-
-Run *ArangoDB* or **ArangoDB Cluster** as container in your Java\Kotlin tests via TestContainers.
+This is [*ArangoDB*](https://www.arangodb.com/) 
+[TestContainers](https://www.testcontainers.org/) 
+implementation with proper start up strategy and even [ArangoDB Cluster](#cluster) containers' setup.
 
 ## Dependency :rocket:
 **Gradle**
 ```groovy
 dependencies {
-    compile 'com.github.goodforgod:arangodb-testcontainer:1.2.0'
+    compile 'com.github.goodforgod:arangodb-testcontainer:1.3.0'
 }
 ```
 
@@ -22,7 +22,7 @@ dependencies {
 <dependency>
     <groupId>com.github.goodforgod</groupId>
     <artifactId>arangodb-testcontainer</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
 </dependency>
 ```
 
@@ -77,7 +77,6 @@ class ArangoContainerTests {
 }
 ```
 
-
 ## Container
 
 ### Up & Running
@@ -88,16 +87,16 @@ Check [here](https://www.testcontainers.org/features/startup_and_waits/) for mor
 
 ### Port
 
-Container runs by default on *8529* port (this is default for ArangpDB).
+Container runs by default on *random* port, you can explicitly set fixed port via **withFixedPort()** contract.
 
-You can specify desired port with specified setter.
+You can specify desired port with specified setter or choose default ArangoDB port as fixed one via *ArangoContainer.PORT_DEFAULT*.
 
 ```java
 @Testcontainers
 class ArangoContainerTests {
 
     @Container
-    private static final ArangoContainer container = new ArangoContainer().withoutAuth().withPort(5689);
+    private static final ArangoContainer container = new ArangoContainer().withoutAuth().withFixedPort(5689);
 
     @Test
     void checkContainerIsRunning() {
@@ -216,7 +215,7 @@ class ArangoContainerTests {
 
 Cluster is available on **default 8529 port** as default, you can change port in builder. 
 ```java
-ArangoClusterDefault.build(int coordinatorPortFromversion)
+ArangoClusterDefault.build(int coordinatorPortFrom)
 ```
 
 ### Cluster Builder
@@ -232,10 +231,23 @@ final List<ArangoClusterContainer> clusterNodes = ArangoClusterBuilder.builder()
             .withDatabaseNodes(3)           // 3 dbserver nodes in cluster
             .withExposedAgentNodes()        // expose agent nodes (not exposed by default)
             .withExposedDBServerNodes()     // exposes dbserver nodes (not exposed by default)
+            .buildContainers();
+```
+
+Or you can build cluster
+
+```java
+final ArangoCluster cluster = ArangoClusterBuilder.builder()
+            .withCoordinatorNodes(3)        // 3 coordinator nodes in cluster
+            .withDatabaseNodes(3)           // 3 dbserver nodes in cluster
+            .withExposedAgentNodes()        // expose agent nodes (not exposed by default)
+            .withExposedDBServerNodes()     // exposes dbserver nodes (not exposed by default)
             .build();
 ```
-w
+
 ## Versions
+
+**1.3.0** - By default container runs on random port, TestContainers up to 1.15.0, withFixedPort() contract instead of just withPort(), ArangoCluster introduced.
 
 **1.2.0** - TestContainers Jupiter dependency hidden from exposure (add separately), random port mapping option, other minor improvements.
 

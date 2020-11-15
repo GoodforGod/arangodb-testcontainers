@@ -17,17 +17,19 @@ import static io.testcontainers.arangodb.containers.ArangoContainer.LATEST;
  * @since 2.3.2020
  */
 @Testcontainers
-class ArangoContainerRandomPasswordTests extends ArangoRunner {
+class ArangoContainerRandomPortTests extends ArangoRunner {
 
     @Container
-    private static final ArangoContainer container = new ArangoContainer(LATEST).withRandomPassword();
+    private static final ArangoContainer container = new ArangoContainer(LATEST).withoutAuth().withRandomPort();
 
     @Test
-    void checkThatAuthorizationRequired() throws Exception {
+    void checkThatDatabaseIsRunning() throws Exception {
         final boolean running = container.isRunning();
         assertTrue(running);
 
         final URL url = getCheckUrl(container);
+        assertNotNull(container.getPort());
+        assertEquals("root", container.getUser());
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setConnectTimeout(5000);
@@ -35,6 +37,9 @@ class ArangoContainerRandomPasswordTests extends ArangoRunner {
         connection.connect();
 
         final int status = connection.getResponseCode();
-        assertEquals(401, status);
+        final String response = getResponse(connection);
+
+        assertEquals(200, status);
+        assertFalse(response.isEmpty());
     }
 }

@@ -10,6 +10,7 @@ plugins {
 repositories {
     mavenLocal()
     mavenCentral()
+    jcenter()
 }
 
 group = groupId
@@ -26,12 +27,29 @@ spotless {
     }
 }
 
+sonarqube {
+    properties {
+        property 'sonar.host.url', 'https://sonarcloud.io'
+        property 'sonar.organization', 'goodforgod'
+        property 'sonar.projectKey', 'GoodforGod_arangodb-testcontainer'
+    }
+}
+
+configurations {
+    all {
+        resolutionStrategy {
+            cacheChangingModulesFor(1000, 'seconds') // refresh cache for snapshots
+        }
+    }
+}
+
 dependencies {
-    api 'org.testcontainers:testcontainers:1.14.3'
+    api 'org.testcontainers:testcontainers:1.15.0'
 
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testRuntimeOnly 'ch.qos.logback:logback-classic:1.2.3'
 
-    testImplementation 'org.testcontainers:junit-jupiter:1.14.3'
+    testImplementation 'org.testcontainers:junit-jupiter:1.15.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testImplementation 'org.slf4j:slf4j-api:1.7.28'
 }
@@ -44,36 +62,20 @@ test {
     }
 }
 
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.incremental = true
+    options.fork = true
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc
+tasks.withType(Test) {
+    reports.html.enabled = false
+    reports.junitXml.enabled = false
 }
 
-javadoc {
-    if (JavaVersion.current().isJava9Compatible()) {
-        options.addBooleanOption('html5', true)
-    }
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled = true
-        html.enabled = true
-        html.destination file("${buildDir}/jacocoHtml")
-    }
-}
-
-sonarqube {
-    properties {
-        property 'sonar.host.url', 'https://sonarcloud.io'
-        property 'sonar.organization', 'goodforgod'
-        property 'sonar.projectKey', 'GoodforGod_arangodb-testcontainer'
-    }
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 publishing {
@@ -87,7 +89,7 @@ publishing {
             pom {
                 name = 'ArangoDB TestContainers'
                 url = 'https://github.com/GoodforGod/arangodb-testcontainer'
-                description = 'This is ArangoDB TestContainers implementation (with TestContainer startup strategy support and cluster setup)'
+                description = 'ArangoDB TestContainers implementation with startup strategy and cluster containers.'
 
                 license {
                     name = 'MIT License'
@@ -124,6 +126,14 @@ publishing {
     }
 }
 
+check.dependsOn jacocoTestReport
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.destination file("${buildDir}/jacocoHtml")
+    }
+}
+
 if (project.hasProperty("signing.keyId")) {
     apply plugin: 'signing'
     signing {
@@ -131,9 +141,9 @@ if (project.hasProperty("signing.keyId")) {
     }
 }
 
-jar {
-    into("META-INF/maven/$project.group/$project.name") {
-        from { generatePomFileForMavenJavaPublication }
-        rename ".*", "pom.xml"
+javadoc {
+    options.encoding = "UTF-8"
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
     }
 }

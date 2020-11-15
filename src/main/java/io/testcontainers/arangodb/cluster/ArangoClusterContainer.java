@@ -43,10 +43,6 @@ public class ArangoClusterContainer extends ArangoContainer {
     private String endpoint;
     private NodeType type;
 
-    protected ArangoClusterContainer() {
-        super();
-    }
-
     protected ArangoClusterContainer(String version) {
         super(version);
     }
@@ -130,13 +126,12 @@ public class ArangoClusterContainer extends ArangoContainer {
 
     private static ArangoClusterContainer build(String version, String cmd, String networkAliasName, int port, boolean expose) {
         final ArangoClusterContainer container = (ArangoClusterContainer) new ArangoClusterContainer(version)
-                .withPort(port)
                 .withoutAuth()
                 .withNetworkAliases(networkAliasName)
                 .withCommand(cmd);
 
         return (expose)
-                ? container
+                ? (ArangoClusterContainer) container.withFixedPort(port)
                 : (ArangoClusterContainer) container.withRandomPort();
     }
 }

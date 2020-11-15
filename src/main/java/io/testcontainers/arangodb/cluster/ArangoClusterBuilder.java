@@ -35,7 +35,7 @@ public class ArangoClusterBuilder {
     private int dbserverPortFrom = ArangoClusterDefault.DBSERVER_PORT_DEFAULT;
     private int coordinatorPortFrom = ArangoClusterDefault.COORDINATOR_PORT_DEFAULT;
 
-    private String version = ArangoContainer.VERSION_DEFAULT;
+    private String version = ArangoContainer.LATEST;
     private boolean exposeAgentNodes = false;
     private boolean exposeDBServerNodes = false;
 
@@ -121,20 +121,40 @@ public class ArangoClusterBuilder {
      * @param version to set for images
      * @return self
      */
-    public ArangoClusterBuilder withVersion(String version) {
+    protected ArangoClusterBuilder withVersion(String version) {
         this.version = version;
         return this;
     }
 
+    /**
+     * This is recommended usage by TestContainers library
+     * 
+     * @see org.testcontainers.containers.GenericContainer
+     * @deprecated use {@link #builder(String)} instead
+     * @return builder for cluster
+     */
+    @Deprecated
     public static ArangoClusterBuilder builder() {
-        return new ArangoClusterBuilder();
+        return builder(ArangoContainer.LATEST);
     }
 
-    public List<ArangoClusterContainer> build() {
+    public static ArangoClusterBuilder builder(String imageVersion) {
+        return new ArangoClusterBuilder().withVersion(imageVersion);
+    }
+
+    public ArangoCluster build() {
         return build(Network.newNetwork());
     }
 
-    public List<ArangoClusterContainer> build(Network network) {
+    public ArangoCluster build(Network network) {
+        return new ArangoCluster(buildContainers(network));
+    }
+
+    public List<ArangoClusterContainer> buildContainers() {
+        return buildContainers(Network.newNetwork());
+    }
+
+    public List<ArangoClusterContainer> buildContainers(Network network) {
         if (agentNodes % 2 != 1)
             throw new UnsupportedOperationException("Agent nodes must be odd number!");
 

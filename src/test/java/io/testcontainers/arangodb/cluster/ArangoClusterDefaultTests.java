@@ -11,6 +11,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
 
+import static io.testcontainers.arangodb.containers.ArangoContainer.LATEST;
+
 /**
  * ArangoDB default cluster configuration tests
  * 
@@ -21,25 +23,26 @@ import java.util.Arrays;
 @Testcontainers
 class ArangoClusterDefaultTests extends ArangoRunner {
 
-    private static ArangoClusterDefault clusterDefault = ArangoClusterDefault.build();
+    private static final ArangoClusterDefault CLUSTER = ArangoClusterDefault.build(LATEST);
 
     @Container
-    private static final ArangoClusterContainer agent1 = clusterDefault.getAgent1();
+    private static final ArangoClusterContainer agent1 = CLUSTER.getAgent1();
     @Container
-    private static final ArangoClusterContainer agent2 = clusterDefault.getAgent2();
+    private static final ArangoClusterContainer agent2 = CLUSTER.getAgent2();
     @Container
-    private static final ArangoClusterContainer agent3 = clusterDefault.getAgent3();
+    private static final ArangoClusterContainer agent3 = CLUSTER.getAgent3();
     @Container
-    private static final ArangoClusterContainer db1 = clusterDefault.getDatabase1();
+    private static final ArangoClusterContainer db1 = CLUSTER.getDatabase1();
     @Container
-    private static final ArangoClusterContainer db2 = clusterDefault.getDatabase2();
+    private static final ArangoClusterContainer db2 = CLUSTER.getDatabase2();
     @Container
-    private static final ArangoClusterContainer coordinator1 = clusterDefault.getCoordinator1();
+    private static final ArangoClusterContainer coordinator1 = CLUSTER.getCoordinator1();
     @Container
-    private static final ArangoClusterContainer coordinator2 = clusterDefault.getCoordinator2();
+    private static final ArangoClusterContainer coordinator2 = CLUSTER.getCoordinator2();
 
     @Test
     void allCoordinatorsAreAccessible() throws IOException {
+        assertEquals(ArangoClusterContainer.NodeType.AGENT_LEADER, CLUSTER.getAgentLeader().getType());
         assertEquals(ArangoClusterContainer.NodeType.AGENT_LEADER, agent1.getType());
         assertEquals(ArangoClusterContainer.NodeType.AGENT, agent2.getType());
         assertEquals(ArangoClusterContainer.NodeType.AGENT, agent3.getType());
