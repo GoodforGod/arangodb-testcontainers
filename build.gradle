@@ -1,9 +1,9 @@
 plugins {
-    id 'jacoco'
-    id 'java-library'
-    id 'maven-publish'
+    id "jacoco"
+    id "java-library"
+    id "maven-publish"
 
-    id 'org.sonarqube' version '3.3'
+    id "org.sonarqube" version "3.3"
     id "com.diffplug.spotless" version "5.11.0"
 }
 
@@ -20,7 +20,7 @@ targetCompatibility = 1.8
 
 spotless {
     java {
-        encoding 'UTF-8'
+        encoding "UTF-8"
         removeUnusedImports()
         eclipse().configFile "${projectDir}/config/codestyle.xml"
     }
@@ -28,21 +28,21 @@ spotless {
 
 sonarqube {
     properties {
-        property 'sonar.host.url', 'https://sonarcloud.io'
-        property 'sonar.organization', 'goodforgod'
-        property 'sonar.projectKey', 'GoodforGod_arangodb-testcontainer'
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.organization", "goodforgod"
+        property "sonar.projectKey", "GoodforGod_arangodb-testcontainer"
     }
 }
 
 dependencies {
-    api 'org.testcontainers:testcontainers:1.16.0'
+    api "org.testcontainers:testcontainers:1.16.0"
 
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-    testRuntimeOnly 'ch.qos.logback:logback-classic:1.2.3'
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.7.0"
+    testRuntimeOnly "ch.qos.logback:logback-classic:1.2.3"
 
-    testImplementation 'org.testcontainers:junit-jupiter:1.16.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api'
-    testImplementation 'org.slf4j:slf4j-api:1.7.28'
+    testImplementation "org.testcontainers:junit-jupiter:1.16.0"
+    testImplementation "org.junit.jupiter:junit-jupiter-api"
+    testImplementation "org.slf4j:slf4j-api:1.7.28"
 }
 
 test {
@@ -59,7 +59,7 @@ test {
 }
 
 tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
+    options.encoding = "UTF-8"
     options.incremental = true
     options.fork = true
 }
@@ -75,27 +75,27 @@ publishing {
             from components.java
 
             pom {
-                name = 'ArangoDB TestContainers'
-                url = 'https://github.com/GoodforGod/arangodb-testcontainer'
-                description = 'ArangoDB TestContainers implementation with startup strategy and cluster containers.'
+                name = "ArangoDB TestContainers"
+                url = "https://github.com/GoodforGod/arangodb-testcontainer"
+                description = "ArangoDB TestContainers implementation with startup strategy and cluster containers."
 
                 license {
-                    name = 'MIT License'
-                    url = 'https://github.com/GoodforGod/arangodb-testcontainer/blob/master/LICENSE'
-                    distribution = 'repo'
+                    name = "MIT License"
+                    url = "https://github.com/GoodforGod/arangodb-testcontainer/blob/master/LICENSE"
+                    distribution = "repo"
                 }
 
                 developer {
-                    id = 'GoodforGod'
-                    name = 'Anton Kurako'
-                    email = 'goodforgod.dev@gmail.com'
-                    url = 'https://github.com/GoodforGod'
+                    id = "GoodforGod"
+                    name = "Anton Kurako"
+                    email = "goodforgod.dev@gmail.com"
+                    url = "https://github.com/GoodforGod"
                 }
 
                 scm {
-                    connection = 'scm:git:git://github.com/GoodforGod/arangodb-testcontainer.git'
-                    developerConnection = 'scm:git:ssh://GoodforGod/arangodb-testcontainer.git'
-                    url = 'https://github.com/GoodforGod/arangodb-testcontainer/tree/master'
+                    connection = "scm:git:git://github.com/GoodforGod/arangodb-testcontainer.git"
+                    developerConnection = "scm:git:ssh://GoodforGod/arangodb-testcontainer.git"
+                    url = "https://github.com/GoodforGod/arangodb-testcontainer/tree/master"
                 }
             }
         }
@@ -105,7 +105,7 @@ publishing {
         maven {
             def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
             def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
             credentials {
                 username System.getenv("OSS_USERNAME")
                 password System.getenv("OSS_PASSWORD")
@@ -123,7 +123,7 @@ jacocoTestReport {
 }
 
 if (project.hasProperty("signing.keyId")) {
-    apply plugin: 'signing'
+    apply plugin: "signing"
     signing {
         sign publishing.publications.mavenJava
     }
@@ -132,6 +132,6 @@ if (project.hasProperty("signing.keyId")) {
 javadoc {
     options.encoding = "UTF-8"
     if (JavaVersion.current().isJava9Compatible()) {
-        options.addBooleanOption('html5', true)
+        options.addBooleanOption("html5", true)
     }
 }
