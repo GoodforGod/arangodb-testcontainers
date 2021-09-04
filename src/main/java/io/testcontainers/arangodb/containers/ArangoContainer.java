@@ -1,5 +1,6 @@
 package io.testcontainers.arangodb.containers;
 
+import java.util.Collections;
 import java.util.function.Consumer;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
@@ -17,29 +18,17 @@ import org.testcontainers.utility.DockerImageName;
 public class ArangoContainer extends GenericContainer<ArangoContainer> {
 
     public static final String LATEST = "latest";
+    public static final Integer DEFAULT_PORT = 8529;
+    public static final String DEFAULT_USER = "root";
+
     private static final String IMAGE = "arangodb";
-
     private static final DockerImageName DEFAULT_IMAGE_NAME = DockerImageName.parse(IMAGE);
-
-    public static final Integer PORT_DEFAULT = 8529;
-    public static final String ROOT_USER = "root";
 
     private static final String ARANGO_NO_AUTH = "ARANGO_NO_AUTH";
     private static final String ARANGO_ROOT_PASSWORD = "ARANGO_ROOT_PASSWORD";
     private static final String ARANGO_RANDOM_ROOT_PASSWORD = "ARANGO_RANDOM_ROOT_PASSWORD";
 
     private String password;
-
-    /**
-     * This is recommended usage by TestContainers library
-     * 
-     * @see org.testcontainers.containers.GenericContainer
-     * @deprecated use {@link ArangoContainer(String)} instead
-     */
-    @Deprecated
-    public ArangoContainer() {
-        this(LATEST);
-    }
 
     public ArangoContainer(String version) {
         this(DockerImageName.parse(IMAGE).withTag(version));
@@ -49,6 +38,7 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
         super(imageName);
         imageName.assertCompatibleWith(DEFAULT_IMAGE_NAME);
 
+        addExposedPort(DEFAULT_PORT);
         withLogConsumer(getOutputConsumer());
         waitingFor(Wait.forLogMessage(".*is ready for business. Have fun!.*", 1));
     }
@@ -58,7 +48,7 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
     }
 
     /**
-     * Setup desired password for {@link #ROOT_USER} for database.
+     * Setup desired password for {@link #DEFAULT_USER} for database.
      *
      * @param password to set on startup
      * @return container itself
@@ -86,7 +76,7 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
     }
 
     /**
-     * Setup random password for {@link #ROOT_USER} for database on startup.
+     * Setup random password for {@link #DEFAULT_USER} for database on startup.
      *
      * @return container itself
      */
@@ -103,11 +93,11 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
     }
 
     public String getUser() {
-        return ROOT_USER;
+        return DEFAULT_USER;
     }
 
-    public Integer getPort() {
-        return getMappedPort(PORT_DEFAULT);
+    public Integer getMappedPort() {
+        return getMappedPort(DEFAULT_PORT);
     }
 
     /**
@@ -115,19 +105,11 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
      *
      * @param port to set for container to run at
      * @return container itself
-     * @see #PORT_DEFAULT
+     * @see #DEFAULT_PORT
      */
     public ArangoContainer withFixedPort(int port) {
-        addFixedExposedPort(port, PORT_DEFAULT);
-        return self();
-    }
-
-    /**
-     * Turns off fixed port mapping and maps container to random host port.
-     *
-     * @return container self
-     */
-    public ArangoContainer withRandomPort() {
+        addFixedExposedPort(port, DEFAULT_PORT);
+        setExposedPorts(Collections.emptyList());
         return self();
     }
 

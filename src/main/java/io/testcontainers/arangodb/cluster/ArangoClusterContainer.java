@@ -125,12 +125,12 @@ public class ArangoClusterContainer extends ArangoContainer {
         final List<String> cmd = new ArrayList<>();
         cmd.add("arangod");
         cmd.add("--server.authentication=false");
-        cmd.add("--server.endpoint " + "tcp://0.0.0.0:" + ArangoContainer.PORT_DEFAULT);
+        cmd.add("--server.endpoint " + "tcp://0.0.0.0:" + ArangoContainer.DEFAULT_PORT);
         return cmd;
     }
 
     private static String getEndpoint(String alias) {
-        return "tcp://" + alias + ":" + ArangoContainer.PORT_DEFAULT;
+        return "tcp://" + alias + ":" + ArangoContainer.DEFAULT_PORT;
     }
 
     private static ArangoClusterContainer build(String version,
@@ -142,17 +142,14 @@ public class ArangoClusterContainer extends ArangoContainer {
                 .reduce((s1, s2) -> s1 + " " + s2)
                 .orElseThrow(() -> new IllegalArgumentException("No Args"));
 
-        // final String[] cmd = commandArguments.toArray(new String[0]);
-
         final ArangoClusterContainer container = (ArangoClusterContainer) new ArangoClusterContainer(version)
                 .withoutAuth()
-                .withNetworkAliases(networkAliasName);
-
-        container.setCommand(cmd);
+                .withNetworkAliases(networkAliasName)
+                .withCommand(cmd);
 
         return (expose)
                 ? (ArangoClusterContainer) container.withFixedPort(port)
-                : (ArangoClusterContainer) container.withRandomPort();
+                : container;
     }
 
     @Override

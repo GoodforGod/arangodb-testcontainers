@@ -17,9 +17,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class ArangoContainerRandomPortTests extends ArangoRunner {
 
     @Container
-    private static final ArangoContainer container = new ArangoContainer(VERSION).withoutAuth()
-            .withFixedPort(ArangoContainer.PORT_DEFAULT)
-            .withRandomPort();
+    private static final ArangoContainer container = new ArangoContainer(VERSION).withoutAuth();
 
     @Test
     void checkThatDatabaseIsRunning() throws Exception {
@@ -27,7 +25,7 @@ class ArangoContainerRandomPortTests extends ArangoRunner {
         assertTrue(running);
 
         final URL url = getCheckUrl(container);
-        assertNotNull(container.getPort());
+        assertNotNull(container.getMappedPort());
         assertEquals("root", container.getUser());
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");

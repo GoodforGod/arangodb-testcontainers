@@ -20,7 +20,7 @@ public abstract class ArangoRunner extends Assertions {
 
     protected URL getCheckUrl(ArangoContainer container) {
         try {
-            return new URL("http://" + container.getHost() + ":" + container.getPort() + "/_api/collection");
+            return new URL("http://" + container.getHost() + ":" + container.getMappedPort() + "/_api/collection");
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException(e);
         }

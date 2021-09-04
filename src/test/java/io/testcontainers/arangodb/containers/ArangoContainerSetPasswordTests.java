@@ -20,7 +20,7 @@ class ArangoContainerSetPasswordTests extends ArangoRunner {
 
     @Container
     private static final ArangoContainer container = new ArangoContainer(VERSION)
-            .withFixedPort(ArangoContainer.PORT_DEFAULT)
+            .withFixedPort(ArangoContainer.DEFAULT_PORT)
             .withPassword(PASS);
 
     @Test

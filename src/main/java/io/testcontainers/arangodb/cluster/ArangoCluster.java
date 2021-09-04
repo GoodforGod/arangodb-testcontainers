@@ -56,7 +56,7 @@ public class ArangoCluster {
     }
 
     public int getAgentLeaderPort() {
-        return getAgentLeader().getPort();
+        return getAgentLeader().getMappedPort();
     }
 
     public List<ArangoClusterContainer> getAgents() {
@@ -77,19 +77,19 @@ public class ArangoCluster {
 
     public List<Integer> getCoordinatorPorts() {
         return getCoordinators().stream()
-                .map(ArangoContainer::getPort)
+                .map(ArangoContainer::getMappedPort)
                 .collect(Collectors.toList());
     }
 
     public List<Integer> getAgentPorts() {
         return getCoordinators().stream()
-                .map(ArangoContainer::getPort)
+                .map(ArangoContainer::getMappedPort)
                 .collect(Collectors.toList());
     }
 
     public List<Integer> getDatabasePorts() {
         return getCoordinators().stream()
-                .map(ArangoContainer::getPort)
+                .map(ArangoContainer::getMappedPort)
                 .collect(Collectors.toList());
     }
 
