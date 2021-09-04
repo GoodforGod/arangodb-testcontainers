@@ -42,20 +42,19 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
     }
 
     public ArangoContainer(String version) {
-        super(DEFAULT_IMAGE_NAME.withTag(version).asCanonicalNameString());
+        this(DockerImageName.parse(IMAGE).withTag(version));
+    }
+
+    public ArangoContainer(DockerImageName imageName) {
+        super(imageName);
+        imageName.assertCompatibleWith(DEFAULT_IMAGE_NAME);
+
+        withLogConsumer(getOutputConsumer());
+        waitingFor(Wait.forLogMessage(".*is ready for business. Have fun!.*", 1));
     }
 
     protected Consumer<OutputFrame> getOutputConsumer() {
         return new Slf4jLogConsumer(LoggerFactory.getLogger(getClass()));
-    }
-
-    /**
-     * Configures startup strategy to single TestContainer framework that container is ready to accept connections
-     */
-    @Override
-    protected void configure() {
-        withLogConsumer(getOutputConsumer());
-        waitingFor(Wait.forLogMessage(".*is ready for business. Have fun!.*", 1));
     }
 
     /**

@@ -21,7 +21,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 class ArangoClusterBuilderExposedTests extends ArangoRunner {
 
-    private static final List<ArangoClusterContainer> CLUSTER = ArangoClusterBuilder.builder("3.7.13")
+    private static final List<ArangoClusterContainer> CLUSTER = ArangoClusterBuilder.builder(VERSION)
             .withCoordinatorNodes(3)
             .withDatabaseNodes(3)
             .withExposedAgentNodes()

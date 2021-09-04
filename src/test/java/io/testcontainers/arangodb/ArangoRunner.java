@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Assertions;
  */
 public abstract class ArangoRunner extends Assertions {
 
+    protected static final String VERSION = "3.7.13";
+
     protected URL getCheckUrl(ArangoContainer container) {
         try {
             return new URL("http://" + container.getHost() + ":" + container.getPort() + "/_api/collection");

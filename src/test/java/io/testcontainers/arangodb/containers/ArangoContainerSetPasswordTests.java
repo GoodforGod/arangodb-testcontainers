@@ -1,7 +1,5 @@
 package io.testcontainers.arangodb.containers;
 
-import static io.testcontainers.arangodb.containers.ArangoContainer.LATEST;
-
 import io.testcontainers.arangodb.ArangoRunner;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -21,7 +19,7 @@ class ArangoContainerSetPasswordTests extends ArangoRunner {
     private static final String PASS = "mypass";
 
     @Container
-    private static final ArangoContainer container = new ArangoContainer(LATEST)
+    private static final ArangoContainer container = new ArangoContainer(VERSION)
             .withFixedPort(ArangoContainer.PORT_DEFAULT)
             .withPassword(PASS);
 

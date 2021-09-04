@@ -13,7 +13,7 @@ implementation with proper start up strategy and even [ArangoDB Cluster](#cluste
 **Gradle**
 ```groovy
 dependencies {
-    compile 'com.github.goodforgod:arangodb-testcontainer:1.4.0'
+    compile 'com.github.goodforgod:arangodb-testcontainer:2.0.0'
 }
 ```
 
@@ -22,7 +22,7 @@ dependencies {
 <dependency>
     <groupId>com.github.goodforgod</groupId>
     <artifactId>arangodb-testcontainer</artifactId>
-    <version>1.4.0</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 

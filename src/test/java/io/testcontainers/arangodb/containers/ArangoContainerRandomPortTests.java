@@ -1,7 +1,5 @@
 package io.testcontainers.arangodb.containers;
 
-import static io.testcontainers.arangodb.containers.ArangoContainer.LATEST;
-
 import io.testcontainers.arangodb.ArangoRunner;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -19,7 +17,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class ArangoContainerRandomPortTests extends ArangoRunner {
 
     @Container
-    private static final ArangoContainer container = new ArangoContainer(LATEST).withoutAuth()
+    private static final ArangoContainer container = new ArangoContainer(VERSION).withoutAuth()
             .withFixedPort(ArangoContainer.PORT_DEFAULT)
             .withRandomPort();
 

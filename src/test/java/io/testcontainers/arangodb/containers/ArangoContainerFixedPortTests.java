@@ -1,7 +1,5 @@
 package io.testcontainers.arangodb.containers;
 
-import static io.testcontainers.arangodb.containers.ArangoContainer.LATEST;
-
 import io.testcontainers.arangodb.ArangoRunner;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -21,7 +19,7 @@ class ArangoContainerFixedPortTests extends ArangoRunner {
     private static final int PORT = 8233;
 
     @Container
-    private static final ArangoContainer container = new ArangoContainer(LATEST).withoutAuth().withFixedPort(PORT);
+    private static final ArangoContainer container = new ArangoContainer(VERSION).withoutAuth().withFixedPort(PORT);
 
     @Test
     void checkThatDatabaseIsRunning() throws Exception {
