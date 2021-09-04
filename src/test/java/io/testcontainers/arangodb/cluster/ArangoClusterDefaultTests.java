@@ -1,32 +1,30 @@
 package io.testcontainers.arangodb.cluster;
 
+import static io.testcontainers.arangodb.cluster.ArangoClusterBuilder.COORDINATOR_PORT_DEFAULT;
+
 import io.testcontainers.arangodb.ArangoRunner;
 import io.testcontainers.arangodb.containers.ArangoContainer;
-import org.junit.jupiter.api.Test;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
-
-import static io.testcontainers.arangodb.containers.ArangoContainer.LATEST;
+import org.junit.jupiter.api.Test;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 /**
  * ArangoDB default cluster configuration tests
  * 
- * @see ArangoClusterDefault
  * @author Anton Kurako (GoodforGod)
  * @since 15.3.2020
  */
 @Testcontainers
 class ArangoClusterDefaultTests extends ArangoRunner {
 
-    private static final ArangoClusterDefault CLUSTER = ArangoClusterDefault.build(LATEST);
+    private static final ArangoCluster CLUSTER = ArangoClusterBuilder.buildDefault("3.7.13", COORDINATOR_PORT_DEFAULT);
 
     @Container
-    private static final ArangoClusterContainer agent1 = CLUSTER.getAgent1();
+    private static final ArangoClusterContainer agent1 = CLUSTER.getAgentLeader();
     @Container
     private static final ArangoClusterContainer agent2 = CLUSTER.getAgent2();
     @Container

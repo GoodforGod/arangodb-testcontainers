@@ -1,14 +1,13 @@
 package io.testcontainers.arangodb.containers;
 
+import static io.testcontainers.arangodb.containers.ArangoContainer.LATEST;
+
 import io.testcontainers.arangodb.ArangoRunner;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import static io.testcontainers.arangodb.containers.ArangoContainer.LATEST;
 
 /**
  * ArangoDB TestContainer tests.
@@ -22,7 +21,9 @@ class ArangoContainerSetPasswordTests extends ArangoRunner {
     private static final String PASS = "mypass";
 
     @Container
-    private static final ArangoContainer container = new ArangoContainer(LATEST).withPassword(PASS);
+    private static final ArangoContainer container = new ArangoContainer(LATEST)
+            .withFixedPort(ArangoContainer.PORT_DEFAULT)
+            .withPassword(PASS);
 
     @Test
     void checkThatAuthorizationRequired() throws Exception {

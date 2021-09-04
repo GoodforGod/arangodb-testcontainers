@@ -1,19 +1,18 @@
 package io.testcontainers.arangodb.cluster;
 
+import static io.testcontainers.arangodb.cluster.ArangoClusterBuilder.AGENCY_PORT_DEFAULT;
+import static io.testcontainers.arangodb.cluster.ArangoClusterBuilder.DBSERVER_PORT_DEFAULT;
+
 import io.testcontainers.arangodb.ArangoRunner;
 import io.testcontainers.arangodb.containers.ArangoContainer;
-import org.junit.jupiter.api.Test;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
-
-import static io.testcontainers.arangodb.cluster.ArangoClusterDefault.*;
-import static io.testcontainers.arangodb.containers.ArangoContainer.LATEST;
+import org.junit.jupiter.api.Test;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 /**
  * @author Anton Kurako (GoodforGod)
@@ -22,7 +21,7 @@ import static io.testcontainers.arangodb.containers.ArangoContainer.LATEST;
 @Testcontainers
 class ArangoClusterBuilderExposedTests extends ArangoRunner {
 
-    private static final List<ArangoClusterContainer> CLUSTER = ArangoClusterBuilder.builder(LATEST)
+    private static final List<ArangoClusterContainer> CLUSTER = ArangoClusterBuilder.builder("3.7.13")
             .withCoordinatorNodes(3)
             .withDatabaseNodes(3)
             .withExposedAgentNodes()

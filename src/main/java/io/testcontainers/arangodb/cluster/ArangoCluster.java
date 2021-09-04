@@ -2,8 +2,8 @@ package io.testcontainers.arangodb.cluster;
 
 import io.testcontainers.arangodb.cluster.ArangoClusterContainer.NodeType;
 import io.testcontainers.arangodb.containers.ArangoContainer;
-
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 public class ArangoCluster {
 
     private final List<ArangoClusterContainer> coordinators;
+    private final ArangoClusterContainer agentLeader;
     private final List<ArangoClusterContainer> agents;
     private final List<ArangoClusterContainer> databases;
 
@@ -24,8 +25,12 @@ public class ArangoCluster {
                 .collect(Collectors.toList());
 
         this.agents = containers.stream()
-                .filter(c -> c.getType().equals(NodeType.AGENT) || c.getType().equals(NodeType.AGENT_LEADER))
+                .filter(c -> c.getType().equals(NodeType.AGENT))
                 .collect(Collectors.toList());
+
+        this.agentLeader = containers.stream()
+                .filter(c -> c.getType().equals(NodeType.AGENT_LEADER))
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("Agent leader is not present!"));
 
         this.databases = containers.stream()
                 .filter(c -> c.getType().equals(NodeType.DBSERVER))
@@ -33,7 +38,7 @@ public class ArangoCluster {
     }
 
     public List<ArangoClusterContainer> getNodes() {
-        return Stream.of(getAgents(), getCoordinators(), getDatabases())
+        return Stream.of(Collections.singletonList(getAgentLeader()), getAgents(), getCoordinators(), getDatabases())
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
@@ -47,10 +52,7 @@ public class ArangoCluster {
     }
 
     public ArangoClusterContainer getAgentLeader() {
-        return agents.stream()
-                .filter(c -> c.getType().equals(NodeType.AGENT_LEADER))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Agent leader not found!"));
+        return this.agentLeader;
     }
 
     public int getAgentLeaderPort() {
@@ -89,5 +91,33 @@ public class ArangoCluster {
         return getCoordinators().stream()
                 .map(ArangoContainer::getPort)
                 .collect(Collectors.toList());
+    }
+
+    public ArangoClusterContainer getAgent1() {
+        return getAgentLeader();
+    }
+
+    public ArangoClusterContainer getAgent2() {
+        return agents.get(0);
+    }
+
+    public ArangoClusterContainer getAgent3() {
+        return agents.get(1);
+    }
+
+    public ArangoClusterContainer getDatabase1() {
+        return databases.get(0);
+    }
+
+    public ArangoClusterContainer getDatabase2() {
+        return databases.get(1);
+    }
+
+    public ArangoClusterContainer getCoordinator1() {
+        return coordinators.get(0);
+    }
+
+    public ArangoClusterContainer getCoordinator2() {
+        return coordinators.get(1);
     }
 }

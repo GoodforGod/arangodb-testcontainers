@@ -10,7 +10,9 @@
         <appender-ref ref="STDOUT"/>
     </appender>
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="ASYNC"/>
     </root>
+
+    <logger level="DEBUG" name="org.testcontainers"/>
 </configuration>

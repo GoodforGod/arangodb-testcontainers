@@ -1,14 +1,13 @@
 package io.testcontainers.arangodb.containers;
 
+import static io.testcontainers.arangodb.containers.ArangoContainer.LATEST;
+
 import io.testcontainers.arangodb.ArangoRunner;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import static io.testcontainers.arangodb.containers.ArangoContainer.LATEST;
 
 /**
  * ArangoDB TestContainer tests.

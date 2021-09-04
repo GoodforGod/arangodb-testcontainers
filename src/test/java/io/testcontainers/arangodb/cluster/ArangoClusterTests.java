@@ -1,18 +1,16 @@
 package io.testcontainers.arangodb.cluster;
 
+import static io.testcontainers.arangodb.cluster.ArangoClusterBuilder.AGENCY_PORT_DEFAULT;
+import static io.testcontainers.arangodb.cluster.ArangoClusterBuilder.DBSERVER_PORT_DEFAULT;
+
 import io.testcontainers.arangodb.ArangoRunner;
 import io.testcontainers.arangodb.containers.ArangoContainer;
-import org.junit.jupiter.api.Test;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-import static io.testcontainers.arangodb.cluster.ArangoClusterDefault.AGENCY_PORT_DEFAULT;
-import static io.testcontainers.arangodb.cluster.ArangoClusterDefault.DBSERVER_PORT_DEFAULT;
-import static io.testcontainers.arangodb.containers.ArangoContainer.LATEST;
+import org.junit.jupiter.api.Test;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 /**
  * @author Anton Kurako (GoodforGod)
@@ -21,17 +19,17 @@ import static io.testcontainers.arangodb.containers.ArangoContainer.LATEST;
 @Testcontainers
 class ArangoClusterTests extends ArangoRunner {
 
-    private static final ArangoCluster CLUSTER = ArangoClusterBuilder.builder(LATEST)
+    private static final ArangoCluster CLUSTER = ArangoClusterBuilder.builder("3.7.13")
             .withCoordinatorNodes(3)
             .withDatabaseNodes(3)
             .build();
 
     @Container
-    private static final ArangoClusterContainer agent1 = CLUSTER.getAgent(0);
+    private static final ArangoClusterContainer agent1 = CLUSTER.getAgentLeader();
     @Container
-    private static final ArangoClusterContainer agent2 = CLUSTER.getAgent(1);
+    private static final ArangoClusterContainer agent2 = CLUSTER.getAgent(0);
     @Container
-    private static final ArangoClusterContainer agent3 = CLUSTER.getAgent(2);
+    private static final ArangoClusterContainer agent3 = CLUSTER.getAgent(1);
 
     @Container
     private static final ArangoClusterContainer db1 = CLUSTER.getDatabase(0);

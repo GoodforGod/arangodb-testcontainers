@@ -1,13 +1,12 @@
 package io.testcontainers.arangodb.containers;
 
+import java.util.function.Consumer;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
-
-import java.util.concurrent.Future;
-import java.util.function.Consumer;
+import org.testcontainers.utility.DockerImageName;
 
 /**
  * ArangoDB TestContainer docker container implementation. Uses Log4j as logger for container output.
@@ -19,6 +18,8 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
 
     public static final String LATEST = "latest";
     private static final String IMAGE = "arangodb";
+
+    private static final DockerImageName DEFAULT_IMAGE_NAME = DockerImageName.parse(IMAGE);
 
     public static final Integer PORT_DEFAULT = 8529;
     public static final String ROOT_USER = "root";
@@ -41,11 +42,7 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
     }
 
     public ArangoContainer(String version) {
-        super(IMAGE + ":" + version);
-    }
-
-    public ArangoContainer(Future<String> dockerImageName) {
-        super(dockerImageName);
+        super(DEFAULT_IMAGE_NAME.withTag(version).asCanonicalNameString());
     }
 
     protected Consumer<OutputFrame> getOutputConsumer() {
