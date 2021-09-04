@@ -13,7 +13,7 @@ implementation with proper start up strategy and even [ArangoDB Cluster](#cluste
 **Gradle**
 ```groovy
 dependencies {
-    compile 'com.github.goodforgod:arangodb-testcontainer:1.3.0'
+    compile 'com.github.goodforgod:arangodb-testcontainer:1.4.0'
 }
 ```
 
@@ -22,7 +22,7 @@ dependencies {
 <dependency>
     <groupId>com.github.goodforgod</groupId>
     <artifactId>arangodb-testcontainer</artifactId>
-    <version>1.3.0</version>
+    <version>1.4.0</version>
 </dependency>
 ```
 
@@ -53,22 +53,22 @@ Check [this section](#Cluster) for more info.
 @Testcontainers
 class ArangoContainerTests {
 
-    private static ArangoClusterDefault cluster = ArangoClusterDefault.build();
-    
+    private static final ArangoCluster CLUSTER = ArangoClusterBuilder.buildDefault("3.7.13", ArangoClusterBuilder.COORDINATOR_PORT_DEFAULT);
+
     @Container
-    private static final ArangoClusterContainer agent1 = cluster.getAgent1();
+    private static final ArangoClusterContainer agent1 = CLUSTER.getAgentLeader();
     @Container
-    private static final ArangoClusterContainer agent2 = cluster.getAgent2();
+    private static final ArangoClusterContainer agent2 = CLUSTER.getAgent2();
     @Container
-    private static final ArangoClusterContainer agent3 = cluster.getAgent3();
+    private static final ArangoClusterContainer agent3 = CLUSTER.getAgent3();
     @Container
-    private static final ArangoClusterContainer db1 = cluster.getDatabase1();
+    private static final ArangoClusterContainer db1 = CLUSTER.getDatabase1();
     @Container
-    private static final ArangoClusterContainer db2 = cluster.getDatabase2();
+    private static final ArangoClusterContainer db2 = CLUSTER.getDatabase2();
     @Container
-    private static final ArangoClusterContainer coordinator1 = cluster.getCoordinator1();
+    private static final ArangoClusterContainer coordinator1 = CLUSTER.getCoordinator1();
     @Container
-    private static final ArangoClusterContainer coordinator2 = cluster.getCoordinator2();
+    private static final ArangoClusterContainer coordinator2 = CLUSTER.getCoordinator2();
 
     @Test
     void checkContainerIsRunning() {
@@ -189,22 +189,22 @@ All containers have dependency on other *containers must be run in correct order
 @Testcontainers
 class ArangoContainerTests {
 
-    private static ArangoClusterDefault cluster = ArangoClusterDefault.build();
-    
+    private static final ArangoCluster CLUSTER = ArangoClusterBuilder.buildDefault("3.7.13", ArangoClusterBuilder.COORDINATOR_PORT_DEFAULT);
+
     @Container
-    private static final ArangoClusterContainer agent1 = cluster.getAgent1();
+    private static final ArangoClusterContainer agent1 = CLUSTER.getAgentLeader();
     @Container
-    private static final ArangoClusterContainer agent2 = cluster.getAgent2();
+    private static final ArangoClusterContainer agent2 = CLUSTER.getAgent2();
     @Container
-    private static final ArangoClusterContainer agent3 = cluster.getAgent3();
+    private static final ArangoClusterContainer agent3 = CLUSTER.getAgent3();
     @Container
-    private static final ArangoClusterContainer db1 = cluster.getDatabase1();
+    private static final ArangoClusterContainer db1 = CLUSTER.getDatabase1();
     @Container
-    private static final ArangoClusterContainer db2 = cluster.getDatabase2();
+    private static final ArangoClusterContainer db2 = CLUSTER.getDatabase2();
     @Container
-    private static final ArangoClusterContainer coordinator1 = cluster.getCoordinator1();
+    private static final ArangoClusterContainer coordinator1 = CLUSTER.getCoordinator1();
     @Container
-    private static final ArangoClusterContainer coordinator2 = cluster.getCoordinator2();
+    private static final ArangoClusterContainer coordinator2 = CLUSTER.getCoordinator2();
 
     @Test
     void checkContainerIsRunning() {
@@ -215,7 +215,7 @@ class ArangoContainerTests {
 
 Cluster is available on **default 8529 port** as default, you can change port in builder. 
 ```java
-ArangoClusterDefault.build(int coordinatorPortFrom)
+ArangoClusterBuilder.buildDefault("3.7.13", 8529)
 ```
 
 ### Cluster Builder
@@ -244,16 +244,6 @@ final ArangoCluster cluster = ArangoClusterBuilder.builder()
             .withExposedDBServerNodes()     // exposes dbserver nodes (not exposed by default)
             .build();
 ```
-
-## Versions
-
-**1.3.0** - By default container runs on random port, TestContainers up to 1.15.0, withFixedPort() contract instead of just withPort(), ArangoCluster introduced.
-
-**1.2.0** - TestContainers Jupiter dependency hidden from exposure (add separately), random port mapping option, other minor improvements.
-
-**1.1.0** - Arango Cluster Containers, Arango Cluster Builder, improved ArangoContainer.
-
-**1.0.0** - Initial project with auth, port set, startup strategy.
 
 ## License
 

@@ -1,7 +1,5 @@
 package io.testcontainers.arangodb.cluster;
 
-import static io.testcontainers.arangodb.cluster.ArangoClusterBuilder.COORDINATOR_PORT_DEFAULT;
-
 import io.testcontainers.arangodb.ArangoRunner;
 import io.testcontainers.arangodb.containers.ArangoContainer;
 import java.io.IOException;
@@ -21,7 +19,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 class ArangoClusterDefaultTests extends ArangoRunner {
 
-    private static final ArangoCluster CLUSTER = ArangoClusterBuilder.buildDefault("3.7.13", COORDINATOR_PORT_DEFAULT);
+    private static final ArangoCluster CLUSTER = ArangoClusterBuilder.buildDefault("3.7.13", ArangoClusterBuilder.COORDINATOR_PORT_DEFAULT);
 
     @Container
     private static final ArangoClusterContainer agent1 = CLUSTER.getAgentLeader();
