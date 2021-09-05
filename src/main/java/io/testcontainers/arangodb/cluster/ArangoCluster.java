@@ -20,21 +20,21 @@ public class ArangoCluster {
     private final List<ArangoClusterContainer> databases;
 
     public ArangoCluster(List<ArangoClusterContainer> containers) {
-        this.coordinators = containers.stream()
+        this.coordinators = Collections.unmodifiableList(containers.stream()
                 .filter(c -> c.getType().equals(NodeType.COORDINATOR))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
 
-        this.agents = containers.stream()
+        this.agents = Collections.unmodifiableList(containers.stream()
                 .filter(c -> c.getType().equals(NodeType.AGENT))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
 
         this.agentLeader = containers.stream()
                 .filter(c -> c.getType().equals(NodeType.AGENT_LEADER))
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("Agent leader is not present!"));
 
-        this.databases = containers.stream()
+        this.databases = Collections.unmodifiableList(containers.stream()
                 .filter(c -> c.getType().equals(NodeType.DBSERVER))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     public List<ArangoClusterContainer> getNodes() {

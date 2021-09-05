@@ -43,6 +43,8 @@ class ArangoClusterDefaultTests extends ArangoRunner {
         assertEquals(ArangoClusterContainer.NodeType.AGENT, agent2.getType());
         assertEquals(ArangoClusterContainer.NodeType.AGENT, agent3.getType());
 
+        assertEquals(CLUSTER.getAgentLeader().getType(), agent1.getType());
+        assertEquals(CLUSTER.getAgentLeader().getPort(), agent1.getPort());
         assertTrue(agent1.isRunning());
         assertTrue(agent2.isRunning());
         assertTrue(agent3.isRunning());
@@ -50,6 +52,19 @@ class ArangoClusterDefaultTests extends ArangoRunner {
         assertTrue(db2.isRunning());
         assertTrue(coordinator1.isRunning());
         assertTrue(coordinator2.isRunning());
+        assertEquals(7, CLUSTER.getNodes().size());
+
+        for (Integer port : CLUSTER.getAgentPorts()) {
+            assertTrue(Arrays.asList(agent1.getPort(), agent2.getPort(), agent3.getPort()).contains(port));
+        }
+
+        for (Integer port : CLUSTER.getDatabasePorts()) {
+            assertTrue(Arrays.asList(db1.getPort(), db2.getPort()).contains(port));
+        }
+
+        for (Integer port : CLUSTER.getCoordinatorPorts()) {
+            assertTrue(Arrays.asList(coordinator1.getPort(), coordinator2.getPort()).contains(port));
+        }
 
         for (ArangoContainer coordinator : Arrays.asList(coordinator1, coordinator2)) {
             final URL url = getCheckUrl(coordinator);

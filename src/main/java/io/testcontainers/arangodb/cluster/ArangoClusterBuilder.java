@@ -240,10 +240,10 @@ public class ArangoClusterBuilder {
             coordinators.add((ArangoClusterContainer) coordinator);
         }
 
-        return Stream.of(agents, databases, coordinators)
+        return Collections.unmodifiableList(Stream.of(agents, databases, coordinators)
                 .flatMap(Collection::stream)
                 .map(c -> ((ArangoClusterContainer) c.withNetwork(network)))
                 .sorted(Comparator.comparing(ArangoClusterContainer::getType))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 }
