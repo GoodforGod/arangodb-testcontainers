@@ -38,7 +38,7 @@ public class ArangoCluster {
     }
 
     public List<ArangoClusterContainer> getNodes() {
-        return Stream.of(Collections.singletonList(getAgentLeader()), getAgents(), getCoordinators(), getDatabases())
+        return Stream.of(getAgents(), getCoordinators(), getDatabases())
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
@@ -51,16 +51,10 @@ public class ArangoCluster {
         return getCoordinators().get(i);
     }
 
-    public ArangoClusterContainer getAgentLeader() {
-        return this.agentLeader;
-    }
-
-    public int getAgentLeaderPort() {
-        return getAgentLeader().getPort();
-    }
-
     public List<ArangoClusterContainer> getAgents() {
-        return agents;
+        return Stream.of(Collections.singletonList(agentLeader), agents)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     public ArangoClusterContainer getAgent(int i) {
@@ -82,15 +76,23 @@ public class ArangoCluster {
     }
 
     public List<Integer> getAgentPorts() {
-        return getCoordinators().stream()
+        return getAgents().stream()
                 .map(ArangoContainer::getPort)
                 .collect(Collectors.toList());
     }
 
     public List<Integer> getDatabasePorts() {
-        return getCoordinators().stream()
+        return getDatabases().stream()
                 .map(ArangoContainer::getPort)
                 .collect(Collectors.toList());
+    }
+
+    public ArangoClusterContainer getAgentLeader() {
+        return this.agentLeader;
+    }
+
+    public int getAgentLeaderPort() {
+        return getAgentLeader().getPort();
     }
 
     public ArangoClusterContainer getAgent1() {
