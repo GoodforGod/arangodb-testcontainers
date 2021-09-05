@@ -42,9 +42,9 @@ public class ArangoClusterBuilder {
     private int dbserverPortFrom = DBSERVER_PORT_DEFAULT;
     private int coordinatorPortFrom = COORDINATOR_PORT_DEFAULT;
 
-    private DockerImageName version;
-    private boolean exposeAgentNodes = false;
-    private boolean exposeDBServerNodes = false;
+    private DockerImageName dockerImageName;
+    private boolean exposeAgents = false;
+    private boolean exposeDBServers = false;
 
     private ArangoClusterBuilder() {}
 
@@ -54,7 +54,7 @@ public class ArangoClusterBuilder {
      * @return self
      */
     public ArangoClusterBuilder withExposedAgentNodes() {
-        this.exposeAgentNodes = true;
+        this.exposeAgents = true;
         return this;
     }
 
@@ -64,7 +64,7 @@ public class ArangoClusterBuilder {
      * @return self
      */
     public ArangoClusterBuilder withExposedDBServerNodes() {
-        this.exposeDBServerNodes = true;
+        this.exposeDBServers = true;
         return this;
     }
 
@@ -129,12 +129,12 @@ public class ArangoClusterBuilder {
      * @return self
      */
     protected ArangoClusterBuilder withVersion(String version) {
-        this.version = DockerImageName.parse(IMAGE).withTag(version);
+        this.dockerImageName = DockerImageName.parse(IMAGE).withTag(version);
         return this;
     }
 
     protected ArangoClusterBuilder withVersion(DockerImageName imageName) {
-        this.version = imageName;
+        this.dockerImageName = imageName;
         imageName.assertCompatibleWith(DEFAULT_IMAGE_NAME);
         return this;
     }
@@ -188,7 +188,7 @@ public class ArangoClusterBuilder {
     }
 
     public List<ArangoClusterContainer> buildContainers(Network network) {
-        if (version == null)
+        if (dockerImageName == null)
             throw new UnsupportedOperationException("Image version can not be empty!");
         if (agentNodes % 2 != 1)
             throw new UnsupportedOperationException("Agent nodes must be odd number!");
@@ -197,38 +197,34 @@ public class ArangoClusterBuilder {
         if (coordinatorNodes < 2)
             throw new IllegalArgumentException("Coordinator nodes can not be less 2");
 
+        final String version = dockerImageName.getVersionPart();
         final List<ArangoClusterContainer> agents = new ArrayList<>(agentNodes);
         final List<ArangoClusterContainer> databases = new ArrayList<>(databaseNodes);
         final List<ArangoClusterContainer> coordinators = new ArrayList<>(coordinatorNodes);
 
-        ArangoClusterContainer leader = null;
+        final String aliasLead = AGENT_LEADER.getAlias();
+        final int portLead = agentPortFrom;
+        final ArangoClusterContainer leader = ArangoClusterContainer.agent(aliasLead, portLead, version, agentNodes, true, exposeAgents);
+        leader.withAgentEndpoints(Collections.singletonList(leader.getEndpoint()));
+        agents.add(leader);
 
         // Build agencies
-        for (int i = 0; i < agentNodes; i++) {
+        for (int i = 1; i < agentNodes; i++) {
             final String alias = AGENT.getAlias(i);
             final int port = agentPortFrom + i;
-            if (i == 0) {
-                leader = ArangoClusterContainer.agent(alias, port, version.getVersionPart(), agentNodes, true, exposeAgentNodes);
-                leader.withAgentEndpoints(Collections.singletonList(leader.getEndpoint()));
-                agents.add(leader);
-            } else {
-                // Add agency dependency and endpoint of leader agency
-                final ArangoClusterContainer agent = (ArangoClusterContainer) ArangoClusterContainer
-                        .agent(alias, port, version.getVersionPart(), agentNodes, false, exposeAgentNodes)
-                        .withAgentEndpoints(Collections.singletonList(leader.getEndpoint()))
-                        .dependsOn(leader);
-                agents.add(agent);
-            }
+            // Add agency dependency and endpoint of leader agency
+            final ArangoClusterContainer agent = (ArangoClusterContainer) ArangoClusterContainer
+                    .agent(alias, port, version, agentNodes, false, exposeAgents)
+                    .withAgentEndpoints(Collections.singletonList(leader.getEndpoint()))
+                    .dependsOn(leader);
+            agents.add(agent);
         }
-
-        if(leader == null)
-            throw new IllegalStateException("Agent Leader can not be nullable!");
 
         // Build agencies
         for (int i = 0; i < databaseNodes; i++) {
             final String alias = DBSERVER.getAlias(i);
             final int port = dbserverPortFrom + i;
-            final ArangoContainer database = ArangoClusterContainer.dbserver(alias, port, version.getVersionPart(), exposeDBServerNodes)
+            final ArangoContainer database = ArangoClusterContainer.dbserver(alias, port, version, exposeDBServers)
                     .withAgentEndpoints(Collections.singletonList(leader.getEndpoint()))
                     .dependsOn(agents);
             databases.add((ArangoClusterContainer) database);
@@ -238,7 +234,7 @@ public class ArangoClusterBuilder {
         for (int i = 0; i < coordinatorNodes; i++) {
             final String alias = COORDINATOR.getAlias(i);
             final int port = coordinatorPortFrom + i;
-            final ArangoContainer coordinator = ArangoClusterContainer.coordinator(alias, port, version.getVersionPart())
+            final ArangoContainer coordinator = ArangoClusterContainer.coordinator(alias, port, version)
                     .withAgentEndpoints(Collections.singletonList(leader.getEndpoint()))
                     .dependsOn(databases);
             coordinators.add((ArangoClusterContainer) coordinator);

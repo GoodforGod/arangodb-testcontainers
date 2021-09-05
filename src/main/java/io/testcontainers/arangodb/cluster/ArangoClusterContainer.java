@@ -18,7 +18,7 @@ public class ArangoClusterContainer extends ArangoContainer {
 
     public enum NodeType {
 
-        AGENT_LEADER("agent"),
+        AGENT_LEADER("agentLeader"),
         AGENT("agent"),
         DBSERVER("dbserver"),
         COORDINATOR("coordinator");
@@ -34,7 +34,9 @@ public class ArangoClusterContainer extends ArangoContainer {
         }
 
         public String getAlias(int number) {
-            return alias + number;
+            return (this.equals(AGENT_LEADER))
+                    ? alias
+                    : alias + number;
         }
     }
 
