@@ -1,6 +1,6 @@
 package io.testcontainers.arangodb.containers;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import org.slf4j.LoggerFactory;
@@ -109,8 +109,8 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
      * @see #DEFAULT_PORT
      */
     public ArangoContainer withFixedPort(int port) {
+        setExposedPorts(new ArrayList<>());
         addFixedExposedPort(port, DEFAULT_PORT);
-        setExposedPorts(Collections.emptyList());
         return self();
     }
 
@@ -121,19 +121,19 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
 
     @Override
     public void setExposedPorts(List<Integer> exposedPorts) {
+        setPortBindings(new ArrayList<>());
         super.setExposedPorts(exposedPorts);
-        setPortBindings(Collections.emptyList());
     }
 
     @Override
     public void addExposedPorts(int... ports) {
+        setPortBindings(new ArrayList<>());
         super.addExposedPorts(ports);
-        setPortBindings(Collections.emptyList());
     }
 
     @Override
     public void addExposedPort(Integer port) {
+        setPortBindings(new ArrayList<>());
         super.addExposedPort(port);
-        setPortBindings(Collections.emptyList());
     }
 }
