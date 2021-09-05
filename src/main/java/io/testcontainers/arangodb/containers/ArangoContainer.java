@@ -1,6 +1,7 @@
 package io.testcontainers.arangodb.containers;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.function.Consumer;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
@@ -96,7 +97,7 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
         return DEFAULT_USER;
     }
 
-    public Integer getMappedPort() {
+    public Integer getPort() {
         return getMappedPort(DEFAULT_PORT);
     }
 
@@ -116,5 +117,23 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
     private void throwAuthException() {
         throw new IllegalArgumentException(
                 "Random or without authentication is enable, please review your configuration");
+    }
+
+    @Override
+    public void setExposedPorts(List<Integer> exposedPorts) {
+        super.setExposedPorts(exposedPorts);
+        setPortBindings(Collections.emptyList());
+    }
+
+    @Override
+    public void addExposedPorts(int... ports) {
+        super.addExposedPorts(ports);
+        setPortBindings(Collections.emptyList());
+    }
+
+    @Override
+    public void addExposedPort(Integer port) {
+        super.addExposedPort(port);
+        setPortBindings(Collections.emptyList());
     }
 }

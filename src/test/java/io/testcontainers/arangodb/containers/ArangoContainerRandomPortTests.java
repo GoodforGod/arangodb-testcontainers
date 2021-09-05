@@ -25,7 +25,7 @@ class ArangoContainerRandomPortTests extends ArangoRunner {
         assertTrue(running);
 
         final URL url = getCheckUrl(container);
-        assertNotNull(container.getMappedPort());
+        assertNotNull(container.getPort());
         assertEquals("root", container.getUser());
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");

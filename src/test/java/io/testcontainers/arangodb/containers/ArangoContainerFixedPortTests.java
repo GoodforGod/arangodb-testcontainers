@@ -27,7 +27,7 @@ class ArangoContainerFixedPortTests extends ArangoRunner {
         assertTrue(running);
 
         final URL url = getCheckUrl(container);
-        assertEquals(PORT, container.getMappedPort());
+        assertEquals(PORT, container.getPort());
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setConnectTimeout(5000);
