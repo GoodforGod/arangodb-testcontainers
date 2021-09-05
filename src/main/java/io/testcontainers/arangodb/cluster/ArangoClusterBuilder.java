@@ -221,6 +221,9 @@ public class ArangoClusterBuilder {
             }
         }
 
+        if(leader == null)
+            throw new IllegalStateException("Agent Leader can not be nullable!");
+
         // Build agencies
         for (int i = 0; i < databaseNodes; i++) {
             final String alias = DBSERVER.getAlias(i);
