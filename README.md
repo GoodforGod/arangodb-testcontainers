@@ -5,11 +5,10 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainer&metric=coverage)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainer)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainer&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainer)
 
-This is [*ArangoDB*](https://www.arangodb.com/) 
-[TestContainers](https://www.testcontainers.org/) 
-implementation with proper start up strategy and even [ArangoDB Cluster](#cluster) containers' setup.
+This is [*ArangoDB*](https://www.arangodb.com/) [TestContainers](https://www.testcontainers.org/) implementation and [ArangoDB Cluster](#cluster) containers setup.
 
 ## Dependency :rocket:
+
 **Gradle**
 ```groovy
 dependencies {
@@ -226,17 +225,6 @@ Returns list of containers sorted in order they must be run.
 You can check each container type via specified cluster container method.
 
 ```java
-final List<ArangoClusterContainer> clusterNodes = ArangoClusterBuilder.builder()
-            .withCoordinatorNodes(3)        // 3 coordinator nodes in cluster
-            .withDatabaseNodes(3)           // 3 dbserver nodes in cluster
-            .withExposedAgentNodes()        // expose agent nodes (not exposed by default)
-            .withExposedDBServerNodes()     // exposes dbserver nodes (not exposed by default)
-            .buildContainers();
-```
-
-Or you can build cluster
-
-```java
 final ArangoCluster cluster = ArangoClusterBuilder.builder()
             .withCoordinatorNodes(3)        // 3 coordinator nodes in cluster
             .withDatabaseNodes(3)           // 3 dbserver nodes in cluster
@@ -248,4 +236,3 @@ final ArangoCluster cluster = ArangoClusterBuilder.builder()
 ## License
 
 This project licensed under the MIT - see the [LICENSE](LICENSE) file for details.
-
