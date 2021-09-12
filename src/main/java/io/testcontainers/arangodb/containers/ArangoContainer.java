@@ -1,13 +1,14 @@
 package io.testcontainers.arangodb.containers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
-
-import java.util.concurrent.Future;
-import java.util.function.Consumer;
+import org.testcontainers.utility.DockerImageName;
 
 /**
  * ArangoDB TestContainer docker container implementation. Uses Log4j as logger for container output.
@@ -18,10 +19,11 @@ import java.util.function.Consumer;
 public class ArangoContainer extends GenericContainer<ArangoContainer> {
 
     public static final String LATEST = "latest";
-    private static final String IMAGE = "arangodb";
+    public static final Integer DEFAULT_PORT = 8529;
+    public static final String DEFAULT_USER = "root";
 
-    public static final Integer PORT_DEFAULT = 8529;
-    public static final String ROOT_USER = "root";
+    private static final String IMAGE = "arangodb";
+    private static final DockerImageName DEFAULT_IMAGE_NAME = DockerImageName.parse(IMAGE);
 
     private static final String ARANGO_NO_AUTH = "ARANGO_NO_AUTH";
     private static final String ARANGO_ROOT_PASSWORD = "ARANGO_ROOT_PASSWORD";
@@ -29,23 +31,17 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
 
     private String password;
 
-    /**
-     * This is recommended usage by TestContainers library
-     * 
-     * @see org.testcontainers.containers.GenericContainer
-     * @deprecated use {@link ArangoContainer(String)} instead
-     */
-    @Deprecated
-    public ArangoContainer() {
-        this(LATEST);
-    }
-
     public ArangoContainer(String version) {
-        super(IMAGE + ":" + version);
+        this(DockerImageName.parse(IMAGE).withTag(version));
     }
 
-    public ArangoContainer(Future<String> dockerImageName) {
-        super(dockerImageName);
+    public ArangoContainer(DockerImageName imageName) {
+        super(imageName);
+        imageName.assertCompatibleWith(DEFAULT_IMAGE_NAME);
+
+        addExposedPort(DEFAULT_PORT);
+        withLogConsumer(getOutputConsumer());
+        waitingFor(Wait.forLogMessage(".*is ready for business. Have fun!.*", 1));
     }
 
     protected Consumer<OutputFrame> getOutputConsumer() {
@@ -53,16 +49,7 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
     }
 
     /**
-     * Configures startup strategy to single TestContainer framework that container is ready to accept connections
-     */
-    @Override
-    protected void configure() {
-        withLogConsumer(getOutputConsumer());
-        waitingFor(Wait.forLogMessage(".*is ready for business. Have fun!.*", 1));
-    }
-
-    /**
-     * Setup desired password for {@link #ROOT_USER} for database.
+     * Setup desired password for {@link #DEFAULT_USER} for database.
      *
      * @param password to set on startup
      * @return container itself
@@ -90,7 +77,7 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
     }
 
     /**
-     * Setup random password for {@link #ROOT_USER} for database on startup.
+     * Setup random password for {@link #DEFAULT_USER} for database on startup.
      *
      * @return container itself
      */
@@ -107,11 +94,11 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
     }
 
     public String getUser() {
-        return ROOT_USER;
+        return DEFAULT_USER;
     }
 
     public Integer getPort() {
-        return getMappedPort(PORT_DEFAULT);
+        return getMappedPort(DEFAULT_PORT);
     }
 
     /**
@@ -119,24 +106,34 @@ public class ArangoContainer extends GenericContainer<ArangoContainer> {
      *
      * @param port to set for container to run at
      * @return container itself
-     * @see #PORT_DEFAULT
+     * @see #DEFAULT_PORT
      */
     public ArangoContainer withFixedPort(int port) {
-        addFixedExposedPort(port, PORT_DEFAULT);
-        return self();
-    }
-
-    /**
-     * Turns off fixed port mapping and maps container to random host port.
-     *
-     * @return container self
-     */
-    public ArangoContainer withRandomPort() {
+        setExposedPorts(new ArrayList<>());
+        addFixedExposedPort(port, DEFAULT_PORT);
         return self();
     }
 
     private void throwAuthException() {
         throw new IllegalArgumentException(
                 "Random or without authentication is enable, please review your configuration");
+    }
+
+    @Override
+    public void setExposedPorts(List<Integer> exposedPorts) {
+        setPortBindings(new ArrayList<>());
+        super.setExposedPorts(exposedPorts);
+    }
+
+    @Override
+    public void addExposedPorts(int... ports) {
+        setPortBindings(new ArrayList<>());
+        super.addExposedPorts(ports);
+    }
+
+    @Override
+    public void addExposedPort(Integer port) {
+        setPortBindings(new ArrayList<>());
+        super.addExposedPort(port);
     }
 }

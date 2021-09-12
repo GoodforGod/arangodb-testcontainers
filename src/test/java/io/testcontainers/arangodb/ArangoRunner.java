@@ -1,13 +1,12 @@
 package io.testcontainers.arangodb;
 
 import io.testcontainers.arangodb.containers.ArangoContainer;
-import org.junit.jupiter.api.Assertions;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * Description in progress
@@ -16,6 +15,8 @@ import java.net.URL;
  * @since 4.3.2020
  */
 public abstract class ArangoRunner extends Assertions {
+
+    protected static final String VERSION = "3.7.13";
 
     protected URL getCheckUrl(ArangoContainer container) {
         try {
