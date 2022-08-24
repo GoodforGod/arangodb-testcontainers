@@ -4,7 +4,7 @@ plugins {
     id "maven-publish"
 
     id "org.sonarqube" version "3.3"
-    id "com.diffplug.spotless" version "5.14.3"
+    id "com.diffplug.spotless" version "6.1.0"
 }
 
 repositories {
@@ -15,35 +15,18 @@ repositories {
 group = groupId
 version = artifactVersion
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-spotless {
-    java {
-        encoding("UTF-8")
-        importOrder()
-        removeUnusedImports()
-        eclipse().configFile("${projectDir}/config/codestyle.xml")
-    }
-}
-
-sonarqube {
-    properties {
-        property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.organization", "goodforgod"
-        property "sonar.projectKey", "GoodforGod_arangodb-testcontainer"
-    }
-}
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
-    api "org.testcontainers:testcontainers:1.16.0"
+    api "org.testcontainers:testcontainers:1.17.3"
 
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.7.2"
-    testRuntimeOnly "ch.qos.logback:logback-classic:1.2.3"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.8.2"
+    testRuntimeOnly "ch.qos.logback:logback-classic:1.2.11"
 
-    testImplementation "org.testcontainers:junit-jupiter:1.16.0"
+    testImplementation "org.testcontainers:junit-jupiter:1.17.3"
     testImplementation "org.junit.jupiter:junit-jupiter-api"
-    testImplementation "org.slf4j:slf4j-api:1.7.28"
+    testImplementation "org.slf4j:slf4j-api:1.7.36"
 }
 
 test {
@@ -104,6 +87,23 @@ publishing {
     }
 }
 
+spotless {
+    java {
+        encoding("UTF-8")
+        importOrder()
+        removeUnusedImports()
+        eclipse("4.21.0").configFile("${rootDir}/config/codestyle.xml")
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.organization", "goodforgod"
+        property "sonar.projectKey", "GoodforGod_arangodb-testcontainer"
+    }
+}
+
 java {
     withJavadocJar()
     withSourcesJar()
@@ -119,7 +119,7 @@ check.dependsOn jacocoTestReport
 jacocoTestReport {
     reports {
         xml.enabled(true)
-        html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
+        html.destination file("${buildDir}/jacocoHtml")
     }
 }
 
