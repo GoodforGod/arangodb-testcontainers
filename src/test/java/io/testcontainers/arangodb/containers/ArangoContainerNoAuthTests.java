@@ -17,7 +17,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class ArangoContainerNoAuthTests extends ArangoRunner {
 
     @Container
-    private static final ArangoContainer container = new ArangoContainer(VERSION).withoutAuth();
+    private static final ArangoContainer<?> container = new ArangoContainer<>(IMAGE_3_7).withoutAuth();
 
     @Test
     void checkThatDatabaseIsRunningForDefaultConfig() throws Exception {

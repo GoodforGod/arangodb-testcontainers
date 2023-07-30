@@ -16,9 +16,10 @@ import org.junit.jupiter.api.Assertions;
  */
 public abstract class ArangoRunner extends Assertions {
 
-    protected static final String VERSION = "3.7.13";
+    protected static final String IMAGE_3_7 = "arangodb:3.7.13";
+    protected static final String IMAGE_3_11 = "arangodb:3.11.2";
 
-    protected URL getCheckUrl(ArangoContainer container) {
+    protected URL getCheckUrl(ArangoContainer<?> container) {
         try {
             return new URL("http://" + container.getHost() + ":" + container.getPort() + "/_api/collection");
         } catch (MalformedURLException e) {
