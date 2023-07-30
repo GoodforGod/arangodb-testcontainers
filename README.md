@@ -3,9 +3,9 @@
 [![Minimum required Java version](https://img.shields.io/badge/Java-8%2B-blue?logo=openjdk)](https://openjdk.org/projects/jdk8/)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.goodforgod/arangodb-testcontainer/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.goodforgod/arangodb-testcontainer)
 ![Java CI](https://github.com/GoodforGod/arangodb-testcontainer/workflows/Java%20CI/badge.svg)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainer&metric=alert_status)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainer)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainer&metric=coverage)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainer)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainer&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainer)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainers&metric=alert_status)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainers)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainers&metric=coverage)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainers)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainers&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainers)
 
 This is [ArangoDB TestContainers](https://testcontainers.com/modules/arangodb/) module for running database as Docker container.
 
@@ -153,7 +153,7 @@ class ArangoContainerTests {
 
     @Container
     private static final ArangoCluster CLUSTER = ArangoCluster.builder("arangodb:3.11.2")
-            .withPassword("jjj")
+            .withPassword("mypass")
             .build();
 
     @Test
@@ -174,9 +174,9 @@ You can check each container type via specified cluster container method.
 
 ```java
 final ArangoCluster cluster = ArangoCluster.builder("arangodb:3.11.2")
-            .withAgentNodes(3)              // 3 dbserver nodes in cluster by default
-            .withDatabaseNodes(2)           // 2 dbserver nodes in cluster by default
-            .withCoordinatorNodes(2)        // 2 coordinator nodes in cluster by default
+            .withAgentNodes(3)              // 3 agent nodes by default
+            .withDatabaseNodes(2)           // 2 dbserver nodes by default
+            .withCoordinatorNodes(2)        // 2 coordinator nodes by default
             .build();
 ```
 

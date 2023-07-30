@@ -101,7 +101,7 @@ publishing {
         if (!version.endsWith("SNAPSHOT")) {
             maven {
                 name = "GitHubPackages"
-                url = "https://maven.pkg.github.com/GoodforGod/arangodb-testcontainer"
+                url = "https://maven.pkg.github.com/GoodforGod/arangodb-testcontainers"
                 credentials {
                     username = System.getenv("GITHUB_ACTOR")
                     password = System.getenv("GITHUB_TOKEN")
