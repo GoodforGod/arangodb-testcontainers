@@ -12,10 +12,12 @@ import org.testcontainers.containers.Network;
 import org.testcontainers.utility.DockerImageName;
 
 /**
- * Arango Cluster TestContainer {@link ArangoContainer} Builder. Builds AGENT, DBSERVER, COORDINATOR
- * containers with specified configuration of nodes.
+ * Arango Cluster TestContainer {@link ArangoContainer} Builder.
  * <p>
- * <a href="https://www.arangodb.com/docs/stable/deployment-cluster-manual-start.html">Manual<a>
+ * Builds AGENT, DBSERVER, COORDINATOR containers with specified configuration of nodes.
+ * <p>
+ * <a href="https://www.arangodb.com/docs/stable/deployment-cluster-manual-start.html">Cluster
+ * Manual</a>
  *
  * @author Anton Kurako (GoodforGod)
  * @since 15.3.2020

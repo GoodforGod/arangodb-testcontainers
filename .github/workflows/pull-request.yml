@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [ '8', '11', '17' ]
+        java: [ '11', '17' ]
     name: Java ${{ matrix.java }} Pull Request setup
 
     steps:
@@ -29,11 +29,11 @@ jobs:
         run: './gradlew classes'
 
       - name: Test
-        run: './gradlew test jacocoTestReport testCodeCoverageReport'
+        run: './gradlew test jacocoTestReport'
 
       - name: SonarQube
-        if: matrix.java == '8'
-        run: './gradlew sonar'
+        if: matrix.java == '11'
+        run: './gradlew sonar --info'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

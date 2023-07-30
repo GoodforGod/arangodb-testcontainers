@@ -10,7 +10,7 @@ import org.testcontainers.utility.DockerImageName;
  * ArangoDB Cluster TestContainer implementation.
  *
  * @author Anton Kurako (GoodforGod)
- * @see ArangoContainer
+ * @see ArangoClusterBuilder
  * @since 15.3.2020
  */
 public final class ArangoClusterContainer<SELF extends ArangoClusterContainer<SELF>> extends ArangoContainer<SELF> {

@@ -14,6 +14,7 @@ import org.testcontainers.utility.DockerImageName;
 
 /**
  * @author Anton Kurako (GoodforGod)
+ * @see ArangoClusterBuilder
  * @since 14.11.2020
  */
 public final class ArangoCluster implements Startable {
