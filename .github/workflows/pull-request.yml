@@ -1,0 +1,39 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches:
+      - master
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ '8', '11', '17' ]
+    name: Java ${{ matrix.java }} Pull Request setup
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'adopt'
+
+      - name: Code Style
+        run: './gradlew spotlessCheck'
+
+      - name: Build
+        run: './gradlew classes'
+
+      - name: Test
+        run: './gradlew test jacocoTestReport testCodeCoverageReport'
+
+      - name: SonarQube
+        if: matrix.java == '8'
+        run: './gradlew sonar'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
