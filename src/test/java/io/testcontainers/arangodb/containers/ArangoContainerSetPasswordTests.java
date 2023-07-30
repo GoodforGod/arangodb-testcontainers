@@ -19,9 +19,7 @@ class ArangoContainerSetPasswordTests extends ArangoRunner {
     private static final String PASS = "mypass";
 
     @Container
-    private static final ArangoContainer container = new ArangoContainer(VERSION)
-            .withFixedPort(ArangoContainer.DEFAULT_PORT)
-            .withPassword(PASS);
+    private static final ArangoContainer<?> container = new ArangoContainer<>(IMAGE_3_11).withPassword(PASS);
 
     @Test
     void checkThatAuthorizationRequired() throws Exception {

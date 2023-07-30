@@ -17,8 +17,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class ArangoContainerRandomPasswordTests extends ArangoRunner {
 
     @Container
-    private static final ArangoContainer container = new ArangoContainer(VERSION)
-            .withFixedPort(ArangoContainer.DEFAULT_PORT)
+    private static final ArangoContainer<?> container = new ArangoContainer<>(IMAGE_3_7)
             .withRandomPassword();
 
     @Test

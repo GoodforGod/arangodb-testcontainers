@@ -2,10 +2,9 @@ package io.testcontainers.arangodb.cluster;
 
 import io.testcontainers.arangodb.containers.ArangoContainer;
 import java.util.*;
-import java.util.function.Consumer;
 import org.slf4j.LoggerFactory;
-import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.utility.DockerImageName;
 
 /**
  * ArangoDB Cluster TestContainer implementation.
@@ -14,11 +13,11 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
  * @see ArangoContainer
  * @since 15.3.2020
  */
-public class ArangoClusterContainer extends ArangoContainer {
+public final class ArangoClusterContainer<SELF extends ArangoClusterContainer<SELF>> extends ArangoContainer<SELF> {
 
     public enum NodeType {
 
-        AGENT_LEADER("agentLeader"),
+        AGENT_LEADER("agent-leader"),
         AGENT("agent"),
         DBSERVER("dbserver"),
         COORDINATOR("coordinator");
@@ -29,133 +28,127 @@ public class ArangoClusterContainer extends ArangoContainer {
             this.alias = alias;
         }
 
-        public String getAlias() {
+        public String alias() {
             return alias;
         }
 
-        public String getAlias(int number) {
+        public String alias(int number) {
             return (this.equals(AGENT_LEADER))
                     ? alias
-                    : alias + number;
+                    : alias + "-" + number;
         }
     }
 
-    private String alias;
-    private String endpoint;
-    private NodeType type;
+    private final NodeType type;
+    private final String alias;
 
-    protected ArangoClusterContainer(String version) {
-        super(version);
-    }
-
-    @Override
-    protected Consumer<OutputFrame> getOutputConsumer() {
-        return new Slf4jLogConsumer(LoggerFactory.getLogger(getClass().getName() + " [" + type + "]"));
-    }
-
-    protected ArangoClusterContainer withAgentEndpoints(Collection<String> agentEndpoints) {
-        final String prefix = NodeType.AGENT.equals(type) || NodeType.AGENT_LEADER.equals(type)
-                ? "--agency.endpoint"
-                : "--cluster.agency-endpoint";
-
-        final List<String> cmd = new ArrayList<>(Arrays.asList(this.getCommandParts()));
-        agentEndpoints.forEach(agentEndpoint -> {
-            cmd.add(prefix);
-            cmd.add(agentEndpoint);
-        });
-
-        this.setCommand(cmd.toArray(new String[0]));
-        return this;
-    }
-
-    public String getEndpoint() {
-        return endpoint;
+    private ArangoClusterContainer(DockerImageName dockerImageName, NodeType type, String alias) {
+        super(dockerImageName);
+        this.type = type;
+        this.alias = alias;
+        withLogConsumer(new Slf4jLogConsumer(
+                LoggerFactory.getLogger(ArangoClusterContainer.class.getCanonicalName() + " [" + alias + "]")));
     }
 
     public NodeType getType() {
         return type;
     }
 
-    protected static ArangoClusterContainer agent(String alias, int port, String version, int totalAgentNodes,
-                                                  boolean leader, boolean expose) {
+    static ArangoClusterContainer<?> agent(DockerImageName image, String alias, int totalAgentNodes, boolean leader) {
         final String endpoint = getEndpoint(alias);
         final List<String> cmd = getCommonCommand(alias);
-        cmd.add("--agency.my-address " + endpoint);
-        cmd.add("--agency.activate true");
-        cmd.add("--agency.size " + totalAgentNodes);
-        cmd.add("--agency.supervision true");
+        cmd.add("--agency.my-address");
+        cmd.add(endpoint);
+        cmd.add("--agency.activate");
+        cmd.add("true");
+        cmd.add("--agency.size");
+        cmd.add(String.valueOf(totalAgentNodes));
+        cmd.add("--agency.supervision");
+        cmd.add("true");
+        cmd.add("--database.directory");
+        cmd.add("agent");
+        cmd.add("--agency.endpoint");
+        cmd.add(getEndpoint(NodeType.AGENT_LEADER.alias()));
 
-        final ArangoClusterContainer container = build(version, cmd, alias, port, expose);
-        container.type = (leader) ? NodeType.AGENT_LEADER : NodeType.AGENT;
-        container.endpoint = endpoint;
-        container.alias = alias;
-        container.setNetworkAliases(Collections.singletonList(alias));
-        return container;
+        final NodeType type = (leader)
+                ? NodeType.AGENT_LEADER
+                : NodeType.AGENT;
+        return new ArangoClusterContainer<>(image, type, alias)
+                .withNetworkAliases(alias)
+                .withCommand(cmd.toArray(new String[0]));
     }
 
-    protected static ArangoClusterContainer dbserver(String alias, int port, String version, boolean expose) {
+    static ArangoClusterContainer<?> dbserver(DockerImageName image, String alias) {
         final String endpoint = getEndpoint(alias);
         final List<String> cmd = getCommonCommand(alias);
-        cmd.add("--cluster.my-local-info " + alias);
-        cmd.add("--cluster.my-role DBSERVER");
-        cmd.add("--cluster.my-address " + endpoint);
+        cmd.add("--cluster.my-local-info");
+        cmd.add(alias);
+        cmd.add("--cluster.my-role");
+        cmd.add("DBSERVER");
+        cmd.add("--cluster.my-address");
+        cmd.add(endpoint);
+        cmd.add("--database.directory");
+        cmd.add("dbserver");
+        cmd.add("--cluster.agency-endpoint");
+        cmd.add(getEndpoint(NodeType.AGENT_LEADER.alias()));
 
-        final ArangoClusterContainer container = build(version, cmd, alias, port, expose);
-        container.endpoint = endpoint;
-        container.type = NodeType.DBSERVER;
-        container.alias = alias;
-        container.setNetworkAliases(Collections.singletonList(alias));
-        return container;
+        return new ArangoClusterContainer<>(image, NodeType.DBSERVER, alias)
+                .withNetworkAliases(alias)
+                .withCommand(cmd.toArray(new String[0]));
     }
 
-    protected static ArangoClusterContainer coordinator(String alias, int port, String version) {
+    static ArangoClusterContainer<?> coordinator(DockerImageName image, String alias) {
         final String endpoint = getEndpoint(alias);
         final List<String> cmd = getCommonCommand(alias);
-        cmd.add("--cluster.my-local-info " + alias);
-        cmd.add("--cluster.my-role COORDINATOR");
-        cmd.add("--cluster.my-address " + endpoint);
+        cmd.add("--cluster.my-local-info");
+        cmd.add(alias);
+        cmd.add("--cluster.my-role");
+        cmd.add("COORDINATOR");
+        cmd.add("--cluster.my-address");
+        cmd.add(endpoint);
+        cmd.add("--database.directory");
+        cmd.add("coordinator");
+        cmd.add("--cluster.agency-endpoint");
+        cmd.add(getEndpoint(NodeType.AGENT_LEADER.alias()));
 
-        final ArangoClusterContainer container = build(version, cmd, alias, port, true);
-        container.endpoint = endpoint;
-        container.type = NodeType.COORDINATOR;
-        container.alias = alias;
-        container.setNetworkAliases(Collections.singletonList(alias));
-        return container;
+        return new ArangoClusterContainer<>(image, NodeType.COORDINATOR, alias)
+                .withNetworkAliases(alias)
+                .withCommand(cmd.toArray(new String[0]));
     }
 
     private static List<String> getCommonCommand(String alias) {
         final List<String> cmd = new ArrayList<>();
         cmd.add("arangod");
-        cmd.add("--server.authentication=false");
-        cmd.add("--server.endpoint " + "tcp://0.0.0.0:" + ArangoContainer.DEFAULT_PORT);
+        cmd.add("--server.endpoint");
+        cmd.add("tcp://0.0.0.0:" + ArangoContainer.PORT);
         return cmd;
     }
 
     private static String getEndpoint(String alias) {
-        return "tcp://" + alias + ":" + ArangoContainer.DEFAULT_PORT;
+        return "tcp://" + alias + ":" + ArangoContainer.PORT;
     }
 
-    private static ArangoClusterContainer build(String version,
-                                                List<String> commandArguments,
-                                                String networkAliasName,
-                                                int port,
-                                                boolean expose) {
-        final String cmd = commandArguments.stream()
-                .reduce((s1, s2) -> s1 + " " + s2)
-                .orElseThrow(() -> new IllegalArgumentException("No Args"));
+    @Override
+    public SELF withoutAuth() {
+        final List<String> cmd = new ArrayList<>(Arrays.asList(this.getCommandParts()));
+        cmd.add("--server.authentication=false");
+        this.setCommand(cmd.toArray(new String[0]));
 
-        final ArangoClusterContainer container = (ArangoClusterContainer) new ArangoClusterContainer(version)
-                .withoutAuth()
-                .withNetworkAliases(networkAliasName)
-                .withCommand(cmd);
+        return super.withoutAuth();
+    }
 
-        return (expose)
-                ? (ArangoClusterContainer) container.withFixedPort(port)
-                : container;
+    @Override
+    public SELF withPassword(String password) {
+        return super.withPassword(password);
+    }
+
+    @Override
+    public String getPassword() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public String getContainerName() {
-        return alias;
+        return getContainerName() + "[" + alias + "]";
     }
 }

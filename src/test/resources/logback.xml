@@ -2,7 +2,7 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>%cyan(%d{HH:mm:ss.SSS}) [%cn] %highlight(%-5level) %logger{36} - %msg%n</pattern>
+            <pattern>%cyan(%d{HH:mm:ss.SSS}) %highlight(%-5level) %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -10,9 +10,10 @@
         <appender-ref ref="STDOUT"/>
     </appender>
 
-    <root level="INFO">
+    <root level="WARN">
         <appender-ref ref="ASYNC"/>
     </root>
 
-    <logger level="DEBUG" name="org.testcontainers"/>
+    <logger level="INFO" name="org.testcontainers"/>
+    <logger level="DEBUG" name="io.testcontainers.arangodb"/>
 </configuration>
