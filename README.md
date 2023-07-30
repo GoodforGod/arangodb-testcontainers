@@ -1,19 +1,23 @@
 # ArangoDB TestContainers
 
+[![Minimum required Java version](https://img.shields.io/badge/Java-8%2B-blue?logo=openjdk)](https://openjdk.org/projects/jdk8/)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.goodforgod/arangodb-testcontainer/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.goodforgod/arangodb-testcontainer)
 ![Java CI](https://github.com/GoodforGod/arangodb-testcontainer/workflows/Java%20CI/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainer&metric=alert_status)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainer)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainer&metric=coverage)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainer)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainer&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainer)
 
-This is [*ArangoDB*](https://www.arangodb.com/) [TestContainers](https://www.testcontainers.org/) implementation and [ArangoDB Cluster](#cluster) containers setup.
+This is [ArangoDB TestContainers](https://testcontainers.com/modules/arangodb/) module for running database as Docker container.
+
+Features:
+- ArangoDB [container](#container).
+- ArangoDB [cluster](#cluster).
 
 ## Dependency :rocket:
 
 **Gradle**
 ```groovy
-dependencies {
-    implementation "com.github.goodforgod:arangodb-testcontainer:2.1.0"
-}
+testImplementation "com.github.goodforgod:arangodb-testcontainer:3.0.0"
 ```
 
 **Maven**
@@ -21,14 +25,14 @@ dependencies {
 <dependency>
     <groupId>com.github.goodforgod</groupId>
     <artifactId>arangodb-testcontainer</artifactId>
-    <version>2.1.0</version>
+    <version>3.0.0</version>
+    <scope>test</scope>
 </dependency>
 ```
 
 ## Usage
 
-Check [this](https://www.testcontainers.org/test_framework_integration/junit_5/) TestContainers tutorials for **Jupiter / JUnit 5** examples
-or [this](https://www.testcontainers.org/quickstart/junit_4_quickstart/) TestContainers tutorials for **JUnit 4** examples.
+Check [this](https://www.testcontainers.org/test_framework_integration/junit_5/) TestContainers tutorials for **Jupiter / JUnit 5** examples.
 
 Run ArangoDB container *without* authentication.
 ```java
@@ -36,7 +40,8 @@ Run ArangoDB container *without* authentication.
 class ArangoContainerTests {
 
     @Container
-    private static final ArangoContainer container = new ArangoContainer().withoutAuth();
+    private static final ArangoContainer<?> container = new ArangoContainer<>("arangodb:3.11.2")
+            .withoutAuth();
 
     @Test
     void checkContainerIsRunning() {
@@ -45,33 +50,20 @@ class ArangoContainerTests {
 }
 ```
 
-Run ArangoDB Cluster *without* authentication (no auth option is available in cluster mode).
-Check [this section](#Cluster) for more info.
+Run ArangoDB Cluster *without* authentication.
 
 ```java
 @Testcontainers
 class ArangoContainerTests {
 
-    private static final ArangoCluster CLUSTER = ArangoClusterBuilder.buildDefault("3.7.13", ArangoClusterBuilder.COORDINATOR_PORT_DEFAULT);
-
     @Container
-    private static final ArangoClusterContainer agent1 = CLUSTER.getAgentLeader();
-    @Container
-    private static final ArangoClusterContainer agent2 = CLUSTER.getAgent2();
-    @Container
-    private static final ArangoClusterContainer agent3 = CLUSTER.getAgent3();
-    @Container
-    private static final ArangoClusterContainer db1 = CLUSTER.getDatabase1();
-    @Container
-    private static final ArangoClusterContainer db2 = CLUSTER.getDatabase2();
-    @Container
-    private static final ArangoClusterContainer coordinator1 = CLUSTER.getCoordinator1();
-    @Container
-    private static final ArangoClusterContainer coordinator2 = CLUSTER.getCoordinator2();
+    private static final ArangoCluster CLUSTER = ArangoCluster.builder("arangodb:3.11.2")
+            .withoutAuth()
+            .build();
 
     @Test
     void checkContainerIsRunning() {
-        assertTrue(coordinator1.isRunning());
+        assertTrue(CLUSTER.getAgentLeader().isRunning());
     }
 }
 ```
@@ -84,30 +76,11 @@ Container implements *startup strategy* and will be *available to TestContainer 
 
 Check [here](https://www.testcontainers.org/features/startup_and_waits/) for more info about strategies.
 
-### Port
-
-Container runs by default on *random* port, you can explicitly set fixed port via **withFixedPort()** contract.
-
-You can specify desired port with specified setter or choose default ArangoDB port as fixed one via *ArangoContainer.PORT_DEFAULT*.
-
-```java
-@Testcontainers
-class ArangoContainerTests {
-
-    @Container
-    private static final ArangoContainer container = new ArangoContainer().withoutAuth().withFixedPort(5689);
-
-    @Test
-    void checkContainerIsRunning() {
-        assertTrue(container.isRunning());
-    }
-```
-
 ### Auth
 
 All authentication options are available as per [ArangoDB Docker description](https://hub.docker.com/_/arangodb).
 
-*Without authentication or password or random password* configuration is **required** as per [docker image]().
+*Without authentication or password or random password* configuration is **required** as per [docker image](https://hub.docker.com/_/arangodb).
 
 #### Without Authentication
 
@@ -118,7 +91,8 @@ You can run ArangoDB without authentication by specifying with setter.
 class ArangoContainerTests {
 
     @Container
-    private static final ArangoContainer container = new ArangoContainer().withoutAuth();
+    private static final ArangoContainer<?> container = new ArangoContainer<>()
+            .withoutAuth();
 
     @Test
     void checkContainerIsRunning() {
@@ -136,7 +110,8 @@ Database default user is *root*. You can specify desired password that will be a
 class ArangoContainerTests {
 
     @Container
-    private static final ArangoContainer container = new ArangoContainer().withPassword("mypass");
+    private static final ArangoContainer<?> container = new ArangoContainer<>()
+            .withPassword("mypass");
 
     @Test
     void checkContainerIsRunning() {
@@ -156,7 +131,8 @@ You will have to retrieve it somehow by your own.
 class ArangoContainerTests {
 
     @Container
-    private static final ArangoContainer container = new ArangoContainer().withRandomPassword();
+    private static final ArangoContainer<?> container = new ArangoContainer<>()
+            .withRandomPassword();
 
     @Test
     void checkContainerIsRunning() {
@@ -167,69 +143,40 @@ class ArangoContainerTests {
 
 ## Cluster
 
-You can run ArangoDB cluster as TestContainers.
+You can run [ArangoDB cluster](https://www.arangodb.com/community-server/cluster/) as TestContainers.
 
 Default cluster with 3 Agent nodes, 2 DBServer nodes and 2 Coordinator nodes is preconfigured for easy usage.
-
-Arango Cluster Builder is available to build custom cluster configuration.
-
-### Default Cluster
-
-You can run containers with all accessible TestContainer configurations.
-Just build default cluster via *ArangoClusterDefault* builder.
-
-Keep order of your containers as per example below, *FIRST start agent nodes, SECOND database servers, THIRD coordinators*.
-
-All containers have dependency on other *containers must be run in correct order* for cluster to initialize.
-
-**If you have problems with cluster initializations, check container run order**.
 
 ```java
 @Testcontainers
 class ArangoContainerTests {
 
-    private static final ArangoCluster CLUSTER = ArangoClusterBuilder.buildDefault("3.7.13", ArangoClusterBuilder.COORDINATOR_PORT_DEFAULT);
-
     @Container
-    private static final ArangoClusterContainer agent1 = CLUSTER.getAgentLeader();
-    @Container
-    private static final ArangoClusterContainer agent2 = CLUSTER.getAgent2();
-    @Container
-    private static final ArangoClusterContainer agent3 = CLUSTER.getAgent3();
-    @Container
-    private static final ArangoClusterContainer db1 = CLUSTER.getDatabase1();
-    @Container
-    private static final ArangoClusterContainer db2 = CLUSTER.getDatabase2();
-    @Container
-    private static final ArangoClusterContainer coordinator1 = CLUSTER.getCoordinator1();
-    @Container
-    private static final ArangoClusterContainer coordinator2 = CLUSTER.getCoordinator2();
+    private static final ArangoCluster CLUSTER = ArangoCluster.builder("arangodb:3.11.2")
+            .withPassword("jjj")
+            .build();
 
     @Test
     void checkContainerIsRunning() {
-        
+        CLUSTER.getHost();
+        CLUSTER.getPort();
+        CLUSTER.getUser();
+        CLUSTER.getPassword();
     }
 }
-```
-
-Cluster is available on **default 8529 port** as default, you can change port in builder. 
-```java
-ArangoClusterBuilder.buildDefault("3.7.13", 8529)
 ```
 
 ### Cluster Builder
 
 You can build cluster with desired size via *ArangoClusterBuilder*.
 
-Returns list of containers sorted in order they must be run.
 You can check each container type via specified cluster container method.
 
 ```java
-final ArangoCluster cluster = ArangoClusterBuilder.builder()
-            .withCoordinatorNodes(3)        // 3 coordinator nodes in cluster
-            .withDatabaseNodes(3)           // 3 dbserver nodes in cluster
-            .withExposedAgentNodes()        // expose agent nodes (not exposed by default)
-            .withExposedDBServerNodes()     // exposes dbserver nodes (not exposed by default)
+final ArangoCluster cluster = ArangoCluster.builder("arangodb:3.11.2")
+            .withAgentNodes(3)              // 3 dbserver nodes in cluster by default
+            .withDatabaseNodes(2)           // 2 dbserver nodes in cluster by default
+            .withCoordinatorNodes(2)        // 2 coordinator nodes in cluster by default
             .build();
 ```
 
