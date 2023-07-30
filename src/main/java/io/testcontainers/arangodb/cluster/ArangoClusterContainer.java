@@ -149,6 +149,6 @@ public final class ArangoClusterContainer<SELF extends ArangoClusterContainer<SE
 
     @Override
     public String getContainerName() {
-        return getContainerName() + "[" + alias + "]";
+        return super.getContainerName() + "[" + alias + "]";
     }
 }

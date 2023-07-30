@@ -166,6 +166,8 @@ public final class ArangoCluster implements Startable {
                     .map(c -> CompletableFuture.runAsync(c::start))
                     .toArray(CompletableFuture[]::new);
             CompletableFuture.allOf(otherFutures).get(15, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            // do nothing
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -190,6 +192,8 @@ public final class ArangoCluster implements Startable {
             CompletableFuture.allOf(agentFutures).get(15, TimeUnit.MINUTES);
 
             agentLeader.stop();
+        } catch (InterruptedException e) {
+            // do nothing
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
