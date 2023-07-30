@@ -18,7 +18,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class ArangoClusterCustomTests extends ArangoRunner {
 
     @Container
-    private static final ArangoCluster CLUSTER = ArangoClusterBuilder.builder(IMAGE_3_11)
+    private static final ArangoCluster CLUSTER = ArangoCluster.builder(IMAGE_3_11)
             .withAgentNodes(3)
             .withDatabaseNodes(3)
             .withCoordinatorNodes(3)
@@ -27,6 +27,16 @@ class ArangoClusterCustomTests extends ArangoRunner {
 
     @Test
     void allCoordinatorsAreAccessible() throws IOException {
+        assertEquals(CLUSTER.getCoordinator(0).getHost(), CLUSTER.getHost());
+        assertEquals(CLUSTER.getCoordinator(0).getPort(), CLUSTER.getPort());
+        assertEquals("root", CLUSTER.getUser());
+        assertEquals("jjj", CLUSTER.getPassword());
+
+        for (ArangoCluster.HostAndPort hostsAndPort : CLUSTER.getHostsAndPorts()) {
+            assertTrue(CLUSTER.getCoordinators().stream()
+                    .anyMatch(c -> hostsAndPort.host().equals(c.getHost()) && hostsAndPort.port() == c.getPort()));
+        }
+
         final ArangoClusterContainer<?> agent1 = CLUSTER.getContainers().get(0);
         final ArangoClusterContainer<?> agent2 = CLUSTER.getContainers().get(1);
         final ArangoClusterContainer<?> agent3 = CLUSTER.getContainers().get(2);

@@ -35,7 +35,7 @@ public final class ArangoClusterBuilder {
     private String password = null;
     private Boolean noAuth = null;
 
-    private ArangoClusterBuilder(DockerImageName image) {
+    ArangoClusterBuilder(DockerImageName image) {
         this.image = image;
     }
 
@@ -93,14 +93,6 @@ public final class ArangoClusterBuilder {
                     "Without authentication can't be enabled when password is set, please review your configuration");
         }
         return this;
-    }
-
-    public static ArangoClusterBuilder builder(String imageVersion) {
-        return new ArangoClusterBuilder(DockerImageName.parse(imageVersion));
-    }
-
-    public static ArangoClusterBuilder builder(DockerImageName imageName) {
-        return new ArangoClusterBuilder(imageName);
     }
 
     public ArangoCluster build() {

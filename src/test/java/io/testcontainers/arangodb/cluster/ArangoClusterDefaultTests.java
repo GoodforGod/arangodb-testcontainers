@@ -20,7 +20,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class ArangoClusterDefaultTests extends ArangoRunner {
 
     @Container
-    private static final ArangoCluster CLUSTER = ArangoClusterBuilder.builder(IMAGE_3_7).build();
+    private static final ArangoCluster CLUSTER = ArangoCluster.builder(IMAGE_3_7).build();
 
     @Test
     void allCoordinatorsAreAccessible() throws IOException {

@@ -4,17 +4,58 @@ import io.testcontainers.arangodb.cluster.ArangoClusterContainer.NodeType;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.testcontainers.lifecycle.Startable;
+import org.testcontainers.utility.DockerImageName;
 
 /**
  * @author Anton Kurako (GoodforGod)
  * @since 14.11.2020
  */
 public final class ArangoCluster implements Startable {
+
+    public static final class HostAndPort {
+
+        private final String host;
+        private final int port;
+
+        private HostAndPort(String host, int port) {
+            this.host = host;
+            this.port = port;
+        }
+
+        public String host() {
+            return host;
+        }
+
+        public int port() {
+            return port;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
+            HostAndPort that = (HostAndPort) o;
+            return port == that.port && Objects.equals(host, that.host);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(host, port);
+        }
+
+        @Override
+        public String toString() {
+            return "[host=" + host + ", port=" + port + ']';
+        }
+    }
 
     private static final String DEFAULT_USER = "root";
 
@@ -42,6 +83,14 @@ public final class ArangoCluster implements Startable {
                 .filter(c -> c.getType().equals(NodeType.DBSERVER))
                 .collect(Collectors.toList()));
         this.password = password;
+    }
+
+    public static ArangoClusterBuilder builder(String imageVersion) {
+        return new ArangoClusterBuilder(DockerImageName.parse(imageVersion));
+    }
+
+    public static ArangoClusterBuilder builder(DockerImageName imageName) {
+        return new ArangoClusterBuilder(imageName);
     }
 
     public List<ArangoClusterContainer<?>> getContainers() {
@@ -94,6 +143,12 @@ public final class ArangoCluster implements Startable {
 
     public Integer getPort() {
         return getCoordinator(0).getPort();
+    }
+
+    public List<HostAndPort> getHostsAndPorts() {
+        return getCoordinators().stream()
+                .map(c -> new HostAndPort(c.getHost(), c.getPort()))
+                .collect(Collectors.toList());
     }
 
     @Override
