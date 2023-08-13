@@ -1,7 +1,9 @@
 package io.testcontainers.arangodb.cluster;
 
 import io.testcontainers.arangodb.containers.ArangoContainer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.utility.DockerImageName;
@@ -28,14 +30,14 @@ public final class ArangoClusterContainer<SELF extends ArangoClusterContainer<SE
             this.alias = alias;
         }
 
-        public String alias() {
-            return alias;
+        public String alias(String clusterId) {
+            return alias + "-" + clusterId;
         }
 
-        public String alias(int number) {
+        public String alias(String clusterId, int number) {
             return (this.equals(AGENT_LEADER))
-                    ? alias
-                    : alias + "-" + number;
+                    ? alias + "-" + clusterId
+                    : alias + "-" + clusterId + "-" + number;
         }
     }
 
@@ -54,7 +56,13 @@ public final class ArangoClusterContainer<SELF extends ArangoClusterContainer<SE
         return type;
     }
 
-    static ArangoClusterContainer<?> agent(DockerImageName image, String alias, int totalAgentNodes, boolean leader) {
+    static ArangoClusterContainer<?>
+            agent(DockerImageName image, String clusterId, int nodeNumber, int totalAgentNodes, boolean leader) {
+        final String aliasLeader = NodeType.AGENT_LEADER.alias(clusterId);
+        final String alias = (leader)
+                ? aliasLeader
+                : NodeType.AGENT.alias(clusterId, nodeNumber);
+
         final String endpoint = getEndpoint(alias);
         final List<String> cmd = getCommonCommand(alias);
         cmd.add("--agency.my-address");
@@ -68,7 +76,7 @@ public final class ArangoClusterContainer<SELF extends ArangoClusterContainer<SE
         cmd.add("--database.directory");
         cmd.add("agent");
         cmd.add("--agency.endpoint");
-        cmd.add(getEndpoint(NodeType.AGENT_LEADER.alias()));
+        cmd.add(getEndpoint(aliasLeader));
 
         final NodeType type = (leader)
                 ? NodeType.AGENT_LEADER
@@ -78,7 +86,10 @@ public final class ArangoClusterContainer<SELF extends ArangoClusterContainer<SE
                 .withCommand(cmd.toArray(new String[0]));
     }
 
-    static ArangoClusterContainer<?> dbserver(DockerImageName image, String alias) {
+    static ArangoClusterContainer<?> dbserver(DockerImageName image, String clusterId, int nodeNumber) {
+        final String alias = NodeType.DBSERVER.alias(clusterId, nodeNumber);
+        final String aliasLeader = NodeType.AGENT_LEADER.alias(clusterId);
+
         final String endpoint = getEndpoint(alias);
         final List<String> cmd = getCommonCommand(alias);
         cmd.add("--cluster.my-local-info");
@@ -90,14 +101,17 @@ public final class ArangoClusterContainer<SELF extends ArangoClusterContainer<SE
         cmd.add("--database.directory");
         cmd.add("dbserver");
         cmd.add("--cluster.agency-endpoint");
-        cmd.add(getEndpoint(NodeType.AGENT_LEADER.alias()));
+        cmd.add(getEndpoint(aliasLeader));
 
         return new ArangoClusterContainer<>(image, NodeType.DBSERVER, alias)
                 .withNetworkAliases(alias)
                 .withCommand(cmd.toArray(new String[0]));
     }
 
-    static ArangoClusterContainer<?> coordinator(DockerImageName image, String alias) {
+    static ArangoClusterContainer<?> coordinator(DockerImageName image, String clusterId, int nodeNumber) {
+        final String alias = NodeType.COORDINATOR.alias(clusterId, nodeNumber);
+        final String aliasLeader = NodeType.AGENT_LEADER.alias(clusterId);
+
         final String endpoint = getEndpoint(alias);
         final List<String> cmd = getCommonCommand(alias);
         cmd.add("--cluster.my-local-info");
@@ -109,7 +123,7 @@ public final class ArangoClusterContainer<SELF extends ArangoClusterContainer<SE
         cmd.add("--database.directory");
         cmd.add("coordinator");
         cmd.add("--cluster.agency-endpoint");
-        cmd.add(getEndpoint(NodeType.AGENT_LEADER.alias()));
+        cmd.add(getEndpoint(aliasLeader));
 
         return new ArangoClusterContainer<>(image, NodeType.COORDINATOR, alias)
                 .withNetworkAliases(alias)
