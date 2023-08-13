@@ -17,7 +17,7 @@ Features:
 
 **Gradle**
 ```groovy
-testImplementation "com.github.goodforgod:arangodb-testcontainer:3.0.0"
+testImplementation "com.github.goodforgod:arangodb-testcontainer:3.0.1"
 ```
 
 **Maven**
@@ -25,7 +25,7 @@ testImplementation "com.github.goodforgod:arangodb-testcontainer:3.0.0"
 <dependency>
     <groupId>com.github.goodforgod</groupId>
     <artifactId>arangodb-testcontainer</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
     <scope>test</scope>
 </dependency>
 ```

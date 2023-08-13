@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jetbrains.annotations.Nullable;
 import org.testcontainers.containers.Network;
+import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 import org.testcontainers.utility.DockerImageName;
 
 /**
@@ -119,32 +120,30 @@ public final class ArangoClusterBuilder {
         final List<ArangoClusterContainer<?>> databases = new ArrayList<>(databaseNodes);
         final List<ArangoClusterContainer<?>> coordinators = new ArrayList<>(coordinatorNodes);
 
-        final String aliasLead = AGENT_LEADER.alias();
-        final ArangoClusterContainer<?> leader = ArangoClusterContainer.agent(image, aliasLead, agentNodes, true);
+        final String clusterId = RandomStringUtils.randomAlphanumeric(8);
+
+        final ArangoClusterContainer<?> leader = ArangoClusterContainer.agent(image, clusterId, 0, agentNodes, true);
         agents.add(leader);
 
         // Build agencies
         for (int i = 2; i <= agentNodes; i++) {
-            final String alias = AGENT.alias(i);
             // Add agency dependency and endpoint of leader agency
             final ArangoClusterContainer<?> agent = ArangoClusterContainer
-                    .agent(image, alias, agentNodes, false)
+                    .agent(image, clusterId, i, agentNodes, false)
                     .dependsOn(leader);
             agents.add(agent);
         }
 
         // Build agencies
         for (int i = 1; i <= databaseNodes; i++) {
-            final String alias = DBSERVER.alias(i);
-            final ArangoClusterContainer<?> database = ArangoClusterContainer.dbserver(image, alias)
+            final ArangoClusterContainer<?> database = ArangoClusterContainer.dbserver(image, clusterId, i)
                     .dependsOn(agents);
             databases.add(database);
         }
 
         // Build agencies
         for (int i = 1; i <= coordinatorNodes; i++) {
-            final String alias = COORDINATOR.alias(i);
-            final ArangoClusterContainer<?> coordinator = ArangoClusterContainer.coordinator(image, alias)
+            final ArangoClusterContainer<?> coordinator = ArangoClusterContainer.coordinator(image, clusterId, i)
                     .dependsOn(agents);
             coordinators.add(coordinator);
         }
