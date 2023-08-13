@@ -14,7 +14,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: '11'
+          java-version: '17'
           distribution: 'adopt'
 
       - name: Build
@@ -24,7 +24,7 @@ jobs:
         run: './gradlew test jacocoTestReport'
 
       - name: SonarQube
-        run: './gradlew sonar'
+        run: './gradlew sonar --info'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
