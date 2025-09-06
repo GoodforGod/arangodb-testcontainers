@@ -15,7 +15,7 @@ import org.testcontainers.utility.DockerImageName;
  * @see ArangoClusterBuilder
  * @since 15.3.2020
  */
-public final class ArangoClusterContainer<SELF extends ArangoClusterContainer<SELF>> extends ArangoContainer<SELF> {
+public class ArangoClusterContainer<SELF extends ArangoClusterContainer<SELF>> extends ArangoContainer<SELF> {
 
     public enum NodeType {
 

@@ -2,7 +2,7 @@
 
 [![Minimum required Java version](https://img.shields.io/badge/Java-8%2B-blue?logo=openjdk)](https://openjdk.org/projects/jdk8/)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.goodforgod/arangodb-testcontainer/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.goodforgod/arangodb-testcontainer)
-![Java CI](https://github.com/GoodforGod/arangodb-testcontainers/workflows/Publish%20Release/badge.svg)
+![Java CI](https://github.com/GoodforGod/arangodb-testcontainers/workflows/CI%20Master/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainers&metric=alert_status)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainers)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainers&metric=coverage)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainers)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainers&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainers)
@@ -17,7 +17,7 @@ Features:
 
 **Gradle**
 ```groovy
-testImplementation "com.github.goodforgod:arangodb-testcontainer:3.0.1"
+testImplementation "com.github.goodforgod:arangodb-testcontainer:4.0.0"
 ```
 
 **Maven**
@@ -25,10 +25,16 @@ testImplementation "com.github.goodforgod:arangodb-testcontainer:3.0.1"
 <dependency>
     <groupId>com.github.goodforgod</groupId>
     <artifactId>arangodb-testcontainer</artifactId>
-    <version>3.0.1</version>
+    <version>4.0.0</version>
     <scope>test</scope>
 </dependency>
 ```
+
+### Testcontainers
+
+- Version 4+ - build on top of Testcontainers [1.21.3](https://mvnrepository.com/artifact/org.testcontainers/testcontainers/1.21.3)
+- Version 3+ - build on top of Testcontainers [1.17.6](https://mvnrepository.com/artifact/org.testcontainers/testcontainers/1.17.6)
+- Version 2+ - build on top of Testcontainers [1.17.3](https://mvnrepository.com/artifact/org.testcontainers/testcontainers/1.17.3)
 
 ## Usage
 
@@ -40,7 +46,7 @@ Run ArangoDB container *without* authentication.
 class ArangoContainerTests {
 
     @Container
-    private static final ArangoContainer<?> container = new ArangoContainer<>("arangodb:3.11.2")
+    private static final ArangoContainer<?> container = new ArangoContainer<>("arangodb:3.12.4")
             .withoutAuth();
 
     @Test
@@ -57,7 +63,7 @@ Run ArangoDB Cluster *without* authentication.
 class ArangoContainerTests {
 
     @Container
-    private static final ArangoCluster CLUSTER = ArangoCluster.builder("arangodb:3.11.2")
+    private static final ArangoCluster CLUSTER = ArangoCluster.builder("arangodb:3.12.4")
             .withoutAuth()
             .build();
 
@@ -152,7 +158,7 @@ Default cluster with 3 Agent nodes, 2 DBServer nodes and 2 Coordinator nodes is 
 class ArangoContainerTests {
 
     @Container
-    private static final ArangoCluster CLUSTER = ArangoCluster.builder("arangodb:3.11.2")
+    private static final ArangoCluster CLUSTER = ArangoCluster.builder("arangodb:3.12.4")
             .withPassword("mypass")
             .build();
 
@@ -173,7 +179,7 @@ You can build cluster with desired size via *ArangoClusterBuilder*.
 You can check each container type via specified cluster container method.
 
 ```java
-final ArangoCluster cluster = ArangoCluster.builder("arangodb:3.11.2")
+final ArangoCluster cluster = ArangoCluster.builder("arangodb:3.12.4")
             .withAgentNodes(3)              // 3 agent nodes by default
             .withDatabaseNodes(2)           // 2 dbserver nodes by default
             .withCoordinatorNodes(2)        // 2 coordinator nodes by default

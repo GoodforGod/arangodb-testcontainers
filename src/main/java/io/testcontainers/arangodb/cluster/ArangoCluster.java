@@ -17,7 +17,7 @@ import org.testcontainers.utility.DockerImageName;
  * @see ArangoClusterBuilder
  * @since 14.11.2020
  */
-public final class ArangoCluster implements Startable {
+public class ArangoCluster implements Startable {
 
     public static final class HostAndPort {
 

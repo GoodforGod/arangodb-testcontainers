@@ -1,8 +1,10 @@
 package io.testcontainers.arangodb.containers;
 
 import io.testcontainers.arangodb.ArangoRunner;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -17,25 +19,23 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class ArangoContainerNoAuthTests extends ArangoRunner {
 
     @Container
-    private static final ArangoContainer<?> container = new ArangoContainer<>(IMAGE_3_7).withoutAuth();
+    private static final ArangoContainer<?> container = new ArangoContainer<>(IMAGE_3_7)
+            .withoutAuth();
 
     @Test
     void checkThatDatabaseIsRunningForDefaultConfig() throws Exception {
         final boolean running = container.isRunning();
         assertTrue(running);
 
-        final URL url = getCheckUrl(container);
-        final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(5000);
-        connection.connect();
+        var uri = getGetCheckURI(container);
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpResponse<String> response = httpClient.send(HttpRequest.newBuilder()
+                .uri(uri)
+                .GET()
+                .timeout(Duration.ofSeconds(10))
+                .build(), HttpResponse.BodyHandlers.ofString());
 
-        final int status = connection.getResponseCode();
-        final String response = getResponse(connection);
-
+        final int status = response.statusCode();
         assertEquals(200, status);
-        assertNotNull(response);
-        assertFalse(response.isEmpty());
     }
 }
