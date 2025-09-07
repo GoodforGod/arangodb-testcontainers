@@ -1,6 +1,6 @@
 # ArangoDB TestContainers
 
-[![Minimum required Java version](https://img.shields.io/badge/Java-8%2B-blue?logo=openjdk)](https://openjdk.org/projects/jdk8/)
+[![Minimum required Java version](https://img.shields.io/badge/Java-11%2B-blue?logo=openjdk)](https://openjdk.org/projects/jdk/11/)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.goodforgod/arangodb-testcontainer/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.goodforgod/arangodb-testcontainer)
 ![Java CI](https://github.com/GoodforGod/arangodb-testcontainers/workflows/CI%20Master/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainers&metric=alert_status)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainers)
