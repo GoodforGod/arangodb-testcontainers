@@ -3,8 +3,10 @@ package io.testcontainers.arangodb.cluster;
 import io.testcontainers.arangodb.ArangoRunner;
 import io.testcontainers.arangodb.containers.ArangoContainer;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Container;
@@ -18,7 +20,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class ArangoClusterCustomTests extends ArangoRunner {
 
     @Container
-    private static final ArangoCluster CLUSTER = ArangoCluster.builder(IMAGE_3_11)
+    private static final ArangoCluster CLUSTER = ArangoCluster.builder(IMAGE_3_12)
             .withAgentNodes(3)
             .withDatabaseNodes(3)
             .withCoordinatorNodes(3)
@@ -26,7 +28,7 @@ class ArangoClusterCustomTests extends ArangoRunner {
             .build();
 
     @Test
-    void allCoordinatorsAreAccessible() throws IOException {
+    void allCoordinatorsAreAccessible() throws IOException, InterruptedException {
         assertEquals(CLUSTER.getCoordinator(0).getHost(), CLUSTER.getHost());
         assertEquals(CLUSTER.getCoordinator(0).getPort(), CLUSTER.getPort());
         assertEquals("root", CLUSTER.getUser());
@@ -64,14 +66,15 @@ class ArangoClusterCustomTests extends ArangoRunner {
         assertTrue(coordinator3.isRunning());
 
         for (ArangoContainer<?> coordinator : Arrays.asList(coordinator1, coordinator2, coordinator3)) {
-            final URL url = getCheckUrl(coordinator);
-            final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setConnectTimeout(35000);
-            connection.setReadTimeout(35000);
-            connection.connect();
+            var uri = getGetCheckURI(coordinator);
+            HttpClient httpClient = HttpClient.newHttpClient();
+            HttpResponse<String> response = httpClient.send(HttpRequest.newBuilder()
+                    .uri(uri)
+                    .GET()
+                    .timeout(Duration.ofSeconds(10))
+                    .build(), HttpResponse.BodyHandlers.ofString());
 
-            final int status = connection.getResponseCode();
+            final int status = response.statusCode();
             assertEquals(401, status);
         }
     }

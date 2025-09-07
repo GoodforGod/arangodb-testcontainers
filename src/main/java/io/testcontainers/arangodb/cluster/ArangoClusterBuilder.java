@@ -23,7 +23,7 @@ import org.testcontainers.utility.DockerImageName;
  * @author Anton Kurako (GoodforGod)
  * @since 15.3.2020
  */
-public final class ArangoClusterBuilder {
+public class ArangoClusterBuilder {
 
     private static final int AGENCY_NODES_DEFAULT = 3;
     private static final int DBSERVER_NODES_DEFAULT = 2;
