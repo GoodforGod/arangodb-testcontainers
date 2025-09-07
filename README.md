@@ -2,7 +2,7 @@
 
 [![Minimum required Java version](https://img.shields.io/badge/Java-11%2B-blue?logo=openjdk)](https://openjdk.org/projects/jdk/11/)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.goodforgod/arangodb-testcontainer/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.goodforgod/arangodb-testcontainer)
-![Java CI](https://github.com/GoodforGod/arangodb-testcontainers/workflows/CI%20Master/badge.svg)
+[![GitHub Action](https://github.com/goodforgod/arangodb-testcontainers/workflows/CI%20Master/badge.svg)](https://github.com/GoodforGod/arangodb-testcontainers/actions?query=workflow%3A"CI+Master"++)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainers&metric=alert_status)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainers)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainers&metric=coverage)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainers)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainers&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainers)
