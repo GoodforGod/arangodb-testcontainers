@@ -33,7 +33,7 @@ testImplementation "com.github.goodforgod:arangodb-testcontainer:6.0.0"
 ### Testcontainers
 
 - Version 6+ - build on top of Testcontainers [2.0.2](https://mvnrepository.com/artifact/org.testcontainers/testcontainers/2.0.2) and Java 17+
-- Version 5+ - build on top of Testcontainers [1.21.3](https://mvnrepository.com/artifact/org.testcontainers/testcontainers/1.21.3) (and generic signature removed)
+- Version 5+ - build on top of Testcontainers [1.21.3](https://mvnrepository.com/artifact/org.testcontainers/testcontainers/1.21.3) (generic `SELF` type erasure removed)
 - Version 4+ - build on top of Testcontainers [1.21.3](https://mvnrepository.com/artifact/org.testcontainers/testcontainers/1.21.3)
 - Version 3+ - build on top of Testcontainers [1.17.6](https://mvnrepository.com/artifact/org.testcontainers/testcontainers/1.17.6)
 - Version 2+ - build on top of Testcontainers [1.17.3](https://mvnrepository.com/artifact/org.testcontainers/testcontainers/1.17.3) and Java 11+
