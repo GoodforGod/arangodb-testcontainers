@@ -1,6 +1,6 @@
 # ArangoDB TestContainers
 
-[![Minimum required Java version](https://img.shields.io/badge/Java-11%2B-blue?logo=openjdk)](https://openjdk.org/projects/jdk/11/)
+[![Minimum required Java version](https://img.shields.io/badge/Java-17%2B-blue?logo=openjdk)](https://openjdk.org/projects/jdk/17/)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.goodforgod/arangodb-testcontainer.svg)](https://central.sonatype.com/artifact/com.github.goodforgod/arangodb-testcontainer)
 [![GitHub Action](https://github.com/goodforgod/arangodb-testcontainers/workflows/CI%20Master/badge.svg)](https://github.com/GoodforGod/arangodb-testcontainers/actions?query=workflow%3A"CI+Master"++)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainers&metric=alert_status)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainers)
@@ -33,7 +33,7 @@ testImplementation "com.github.goodforgod:arangodb-testcontainer:6.0.0"
 ### Testcontainers
 
 - Version 6+ - build on top of Testcontainers [2.0.2](https://mvnrepository.com/artifact/org.testcontainers/testcontainers/2.0.2) and Java 17+
-- Version 5+ - build on top of Testcontainers [1.21.3](https://mvnrepository.com/artifact/org.testcontainers/testcontainers/1.21.3) (and generic signature removed)
+- Version 5+ - build on top of Testcontainers [1.21.3](https://mvnrepository.com/artifact/org.testcontainers/testcontainers/1.21.3) (generic `SELF` type erasure removed)
 - Version 4+ - build on top of Testcontainers [1.21.3](https://mvnrepository.com/artifact/org.testcontainers/testcontainers/1.21.3)
 - Version 3+ - build on top of Testcontainers [1.17.6](https://mvnrepository.com/artifact/org.testcontainers/testcontainers/1.17.6)
 - Version 2+ - build on top of Testcontainers [1.17.3](https://mvnrepository.com/artifact/org.testcontainers/testcontainers/1.17.3) and Java 11+
