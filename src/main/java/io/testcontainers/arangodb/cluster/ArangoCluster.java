@@ -60,14 +60,14 @@ public class ArangoCluster implements Startable {
 
     private static final String DEFAULT_USER = "root";
 
-    private final ArangoClusterContainer<?> agentLeader;
-    private final List<ArangoClusterContainer<?>> coordinators;
-    private final List<ArangoClusterContainer<?>> agents;
-    private final List<ArangoClusterContainer<?>> databases;
+    private final ArangoClusterContainer agentLeader;
+    private final List<ArangoClusterContainer> coordinators;
+    private final List<ArangoClusterContainer> agents;
+    private final List<ArangoClusterContainer> databases;
 
     private final String password;
 
-    ArangoCluster(List<ArangoClusterContainer<?>> containers, String password) {
+    ArangoCluster(List<ArangoClusterContainer> containers, String password) {
         this.coordinators = Collections.unmodifiableList(containers.stream()
                 .filter(c -> c.getType().equals(NodeType.COORDINATOR))
                 .collect(Collectors.toList()));
@@ -94,39 +94,39 @@ public class ArangoCluster implements Startable {
         return new ArangoClusterBuilder(imageName);
     }
 
-    public List<ArangoClusterContainer<?>> getContainers() {
+    public List<ArangoClusterContainer> getContainers() {
         return Stream.of(getAgents(), getDatabases(), getCoordinators())
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
 
-    public List<ArangoClusterContainer<?>> getCoordinators() {
+    public List<ArangoClusterContainer> getCoordinators() {
         return coordinators;
     }
 
-    public ArangoClusterContainer<?> getCoordinator(int i) {
+    public ArangoClusterContainer getCoordinator(int i) {
         return getCoordinators().get(i);
     }
 
-    public List<ArangoClusterContainer<?>> getAgents() {
+    public List<ArangoClusterContainer> getAgents() {
         return Stream.of(Collections.singletonList(agentLeader), agents)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
 
-    public ArangoClusterContainer<?> getAgent(int i) {
+    public ArangoClusterContainer getAgent(int i) {
         return getAgents().get(i);
     }
 
-    public List<ArangoClusterContainer<?>> getDatabases() {
+    public List<ArangoClusterContainer> getDatabases() {
         return databases;
     }
 
-    public ArangoClusterContainer<?> getDatabase(int i) {
+    public ArangoClusterContainer getDatabase(int i) {
         return getDatabases().get(i);
     }
 
-    public ArangoClusterContainer<?> getAgentLeader() {
+    public ArangoClusterContainer getAgentLeader() {
         return this.agentLeader;
     }
 

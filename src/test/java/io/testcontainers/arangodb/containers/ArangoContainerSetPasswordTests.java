@@ -21,7 +21,7 @@ class ArangoContainerSetPasswordTests extends ArangoRunner {
     private static final String PASS = "mypass";
 
     @Container
-    private static final ArangoContainer<?> container = new ArangoContainer<>(IMAGE_3_12)
+    private static final ArangoContainer container = new ArangoContainer(IMAGE_3_12)
             .withPassword(PASS);
 
     @Test

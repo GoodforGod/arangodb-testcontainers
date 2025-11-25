@@ -15,7 +15,7 @@ public abstract class ArangoRunner extends Assertions {
     protected static final String IMAGE_3_7 = "arangodb:3.7.13";
     protected static final String IMAGE_3_12 = "arangodb:3.12.4";
 
-    protected URI getGetCheckURI(ArangoContainer<?> container) {
+    protected URI getGetCheckURI(ArangoContainer container) {
         String host = (container.getHost().equals("[::1]"))
                 ? "localhost"
                 : container.getHost();

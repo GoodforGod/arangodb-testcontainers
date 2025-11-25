@@ -17,7 +17,7 @@ Features:
 
 **Gradle**
 ```groovy
-testImplementation "com.github.goodforgod:arangodb-testcontainer:4.0.0"
+testImplementation "com.github.goodforgod:arangodb-testcontainer:5.0.0"
 ```
 
 **Maven**
@@ -25,13 +25,14 @@ testImplementation "com.github.goodforgod:arangodb-testcontainer:4.0.0"
 <dependency>
     <groupId>com.github.goodforgod</groupId>
     <artifactId>arangodb-testcontainer</artifactId>
-    <version>4.0.0</version>
+    <version>5.0.0</version>
     <scope>test</scope>
 </dependency>
 ```
 
 ### Testcontainers
 
+- Version 5+ - build on top of Testcontainers [1.21.3](https://mvnrepository.com/artifact/org.testcontainers/testcontainers/1.21.3) (and generic signature removed)
 - Version 4+ - build on top of Testcontainers [1.21.3](https://mvnrepository.com/artifact/org.testcontainers/testcontainers/1.21.3)
 - Version 3+ - build on top of Testcontainers [1.17.6](https://mvnrepository.com/artifact/org.testcontainers/testcontainers/1.17.6)
 - Version 2+ - build on top of Testcontainers [1.17.3](https://mvnrepository.com/artifact/org.testcontainers/testcontainers/1.17.3)
@@ -46,7 +47,7 @@ Run ArangoDB container *without* authentication.
 class ArangoContainerTests {
 
     @Container
-    private static final ArangoContainer<?> container = new ArangoContainer<>("arangodb:3.12.4")
+    private static final ArangoContainer container = new ArangoContainer("arangodb:3.12.4")
             .withoutAuth();
 
     @Test
@@ -97,7 +98,7 @@ You can run ArangoDB without authentication by specifying with setter.
 class ArangoContainerTests {
 
     @Container
-    private static final ArangoContainer<?> container = new ArangoContainer<>()
+    private static final ArangoContainer container = new ArangoContainer()
             .withoutAuth();
 
     @Test
@@ -116,7 +117,7 @@ Database default user is *root*. You can specify desired password that will be a
 class ArangoContainerTests {
 
     @Container
-    private static final ArangoContainer<?> container = new ArangoContainer<>()
+    private static final ArangoContainer container = new ArangoContainer()
             .withPassword("mypass");
 
     @Test
@@ -137,7 +138,7 @@ You will have to retrieve it somehow by your own.
 class ArangoContainerTests {
 
     @Container
-    private static final ArangoContainer<?> container = new ArangoContainer<>()
+    private static final ArangoContainer container = new ArangoContainer()
             .withRandomPassword();
 
     @Test

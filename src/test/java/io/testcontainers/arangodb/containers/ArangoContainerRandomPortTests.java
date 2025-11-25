@@ -19,7 +19,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class ArangoContainerRandomPortTests extends ArangoRunner {
 
     @Container
-    private static final ArangoContainer<?> container = new ArangoContainer<>(IMAGE_3_7)
+    private static final ArangoContainer container = new ArangoContainer(IMAGE_3_7)
             .withoutAuth();
 
     @Test
