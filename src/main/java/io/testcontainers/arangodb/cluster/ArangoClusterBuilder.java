@@ -149,18 +149,11 @@ public class ArangoClusterBuilder {
 
         return Stream.of(agents, databases, coordinators)
                 .flatMap(Collection::stream)
-                .peek(c -> {
-                    if (network != null) {
-                        c.withNetwork(network);
-                    } else {
-                        c.withNetwork(Network.SHARED);
-                    }
-
-                    if (password != null && c.getType() == COORDINATOR) {
-                        c.withPassword(password);
-                    } else {
-                        c.withoutAuth();
-                    }
+                .map(c -> {
+                    c.withNetwork(Objects.requireNonNullElse(network, Network.SHARED));
+                    return (password != null && c.getType() == COORDINATOR)
+                            ? c.withPassword(password)
+                            : c.withoutAuth();
                 })
                 .sorted(Comparator.comparing(ArangoClusterContainer::getType))
                 .toList();

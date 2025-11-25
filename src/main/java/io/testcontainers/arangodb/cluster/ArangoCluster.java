@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.testcontainers.lifecycle.Startable;
 import org.testcontainers.utility.DockerImageName;
@@ -97,7 +96,7 @@ public class ArangoCluster implements Startable {
     public List<ArangoClusterContainer> getContainers() {
         return Stream.of(getAgents(), getDatabases(), getCoordinators())
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<ArangoClusterContainer> getCoordinators() {
@@ -111,7 +110,7 @@ public class ArangoCluster implements Startable {
     public List<ArangoClusterContainer> getAgents() {
         return Stream.of(Collections.singletonList(agentLeader), agents)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public ArangoClusterContainer getAgent(int i) {
@@ -149,7 +148,7 @@ public class ArangoCluster implements Startable {
     public List<HostAndPort> getHostsAndPorts() {
         return getCoordinators().stream()
                 .map(c -> new HostAndPort(c.getHost(), c.getPort()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
