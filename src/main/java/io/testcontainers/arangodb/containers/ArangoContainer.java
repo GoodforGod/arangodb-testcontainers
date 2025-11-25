@@ -11,7 +11,7 @@ import org.testcontainers.utility.DockerImageName;
  * @author Anton Kurako (GoodforGod)
  * @since 2.3.2020
  */
-public class ArangoContainer<SELF extends ArangoContainer<SELF>> extends GenericContainer<SELF> {
+public class ArangoContainer extends GenericContainer<ArangoContainer> {
 
     public static final Integer PORT = 8529;
 
@@ -66,7 +66,7 @@ public class ArangoContainer<SELF extends ArangoContainer<SELF>> extends Generic
      * @param password to set on startup
      * @return container itself
      */
-    public SELF withPassword(String password) {
+    public ArangoContainer withPassword(String password) {
         this.password = password;
         return withEnv(ARANGO_ROOT_PASSWORD, password);
     }
@@ -76,7 +76,7 @@ public class ArangoContainer<SELF extends ArangoContainer<SELF>> extends Generic
      *
      * @return container itself
      */
-    public SELF withoutAuth() {
+    public ArangoContainer withoutAuth() {
         return withEnv(ARANGO_NO_AUTH, "1");
     }
 
@@ -85,7 +85,7 @@ public class ArangoContainer<SELF extends ArangoContainer<SELF>> extends Generic
      *
      * @return container itself
      */
-    public SELF withRandomPassword() {
+    public ArangoContainer withRandomPassword() {
         return withEnv(ARANGO_RANDOM_ROOT_PASSWORD, "1");
     }
 

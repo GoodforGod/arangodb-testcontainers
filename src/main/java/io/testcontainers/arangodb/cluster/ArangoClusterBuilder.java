@@ -106,7 +106,7 @@ public class ArangoClusterBuilder {
         return new ArangoCluster(buildContainers(network), password);
     }
 
-    private List<ArangoClusterContainer<?>> buildContainers(@Nullable Network network) {
+    private List<ArangoClusterContainer> buildContainers(@Nullable Network network) {
         if (image == null)
             throw new UnsupportedOperationException("Image version can not be empty!");
         if (agentNodes % 2 != 1)
@@ -116,19 +116,19 @@ public class ArangoClusterBuilder {
         if (coordinatorNodes < 2)
             throw new IllegalArgumentException("Coordinator nodes can not be less 2");
 
-        final List<ArangoClusterContainer<?>> agents = new ArrayList<>(agentNodes);
-        final List<ArangoClusterContainer<?>> databases = new ArrayList<>(databaseNodes);
-        final List<ArangoClusterContainer<?>> coordinators = new ArrayList<>(coordinatorNodes);
+        final List<ArangoClusterContainer> agents = new ArrayList<>(agentNodes);
+        final List<ArangoClusterContainer> databases = new ArrayList<>(databaseNodes);
+        final List<ArangoClusterContainer> coordinators = new ArrayList<>(coordinatorNodes);
 
         final String clusterId = RandomStringUtils.randomAlphanumeric(8);
 
-        final ArangoClusterContainer<?> leader = ArangoClusterContainer.agent(image, clusterId, 0, agentNodes, true);
+        final ArangoClusterContainer leader = ArangoClusterContainer.agent(image, clusterId, 0, agentNodes, true);
         agents.add(leader);
 
         // Build agencies
         for (int i = 2; i <= agentNodes; i++) {
             // Add agency dependency and endpoint of leader agency
-            final ArangoClusterContainer<?> agent = ArangoClusterContainer
+            final ArangoClusterContainer agent = (ArangoClusterContainer) ArangoClusterContainer
                     .agent(image, clusterId, i, agentNodes, false)
                     .dependsOn(leader);
             agents.add(agent);
@@ -136,14 +136,15 @@ public class ArangoClusterBuilder {
 
         // Build agencies
         for (int i = 1; i <= databaseNodes; i++) {
-            final ArangoClusterContainer<?> database = ArangoClusterContainer.dbserver(image, clusterId, i)
+            final ArangoClusterContainer database = (ArangoClusterContainer) ArangoClusterContainer.dbserver(image, clusterId, i)
                     .dependsOn(agents);
             databases.add(database);
         }
 
         // Build agencies
         for (int i = 1; i <= coordinatorNodes; i++) {
-            final ArangoClusterContainer<?> coordinator = ArangoClusterContainer.coordinator(image, clusterId, i)
+            final ArangoClusterContainer coordinator = (ArangoClusterContainer) ArangoClusterContainer
+                    .coordinator(image, clusterId, i)
                     .dependsOn(agents);
             coordinators.add(coordinator);
         }

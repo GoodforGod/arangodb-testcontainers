@@ -26,13 +26,13 @@ class ArangoClusterDefaultTests extends ArangoRunner {
 
     @Test
     void allCoordinatorsAreAccessible() throws IOException, InterruptedException {
-        final ArangoClusterContainer<?> agent1 = CLUSTER.getAgentLeader();
-        final ArangoClusterContainer<?> agent2 = CLUSTER.getAgent(1);
-        final ArangoClusterContainer<?> agent3 = CLUSTER.getAgent(2);
-        final ArangoClusterContainer<?> db1 = CLUSTER.getDatabase(0);
-        final ArangoClusterContainer<?> db2 = CLUSTER.getDatabase(1);
-        final ArangoClusterContainer<?> coordinator1 = CLUSTER.getCoordinator(0);
-        final ArangoClusterContainer<?> coordinator2 = CLUSTER.getCoordinator(1);
+        final ArangoClusterContainer agent1 = CLUSTER.getAgentLeader();
+        final ArangoClusterContainer agent2 = CLUSTER.getAgent(1);
+        final ArangoClusterContainer agent3 = CLUSTER.getAgent(2);
+        final ArangoClusterContainer db1 = CLUSTER.getDatabase(0);
+        final ArangoClusterContainer db2 = CLUSTER.getDatabase(1);
+        final ArangoClusterContainer coordinator1 = CLUSTER.getCoordinator(0);
+        final ArangoClusterContainer coordinator2 = CLUSTER.getCoordinator(1);
 
         assertEquals(ArangoClusterContainer.NodeType.AGENT_LEADER, CLUSTER.getAgentLeader().getType());
         assertEquals(ArangoClusterContainer.NodeType.AGENT_LEADER, agent1.getType());
@@ -50,22 +50,22 @@ class ArangoClusterDefaultTests extends ArangoRunner {
         assertTrue(coordinator2.isRunning());
         assertEquals(7, CLUSTER.getContainers().size());
 
-        for (ArangoClusterContainer<?> agent : CLUSTER.getAgents()) {
+        for (ArangoClusterContainer agent : CLUSTER.getAgents()) {
             int port = agent.getPort();
             assertTrue(Arrays.asList(agent1.getPort(), agent2.getPort(), agent3.getPort()).contains(port));
         }
 
-        for (ArangoClusterContainer<?> database : CLUSTER.getDatabases()) {
+        for (ArangoClusterContainer database : CLUSTER.getDatabases()) {
             int port = database.getPort();
             assertTrue(Arrays.asList(db1.getPort(), db2.getPort()).contains(port));
         }
 
-        for (ArangoClusterContainer<?> coord : CLUSTER.getCoordinators()) {
+        for (ArangoClusterContainer coord : CLUSTER.getCoordinators()) {
             int port = coord.getPort();
             assertTrue(Arrays.asList(coordinator1.getPort(), coordinator2.getPort()).contains(port));
         }
 
-        for (ArangoContainer<?> coordinator : Arrays.asList(coordinator1, coordinator2)) {
+        for (ArangoContainer coordinator : Arrays.asList(coordinator1, coordinator2)) {
             var uri = getGetCheckURI(coordinator);
             HttpClient httpClient = HttpClient.newHttpClient();
             HttpResponse<String> response = httpClient.send(HttpRequest.newBuilder()

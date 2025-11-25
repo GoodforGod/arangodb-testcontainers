@@ -15,7 +15,7 @@ import org.testcontainers.utility.DockerImageName;
  * @see ArangoClusterBuilder
  * @since 15.3.2020
  */
-public class ArangoClusterContainer<SELF extends ArangoClusterContainer<SELF>> extends ArangoContainer<SELF> {
+public class ArangoClusterContainer extends ArangoContainer {
 
     public enum NodeType {
 
@@ -56,8 +56,11 @@ public class ArangoClusterContainer<SELF extends ArangoClusterContainer<SELF>> e
         return type;
     }
 
-    static ArangoClusterContainer<?>
-            agent(DockerImageName image, String clusterId, int nodeNumber, int totalAgentNodes, boolean leader) {
+    static ArangoClusterContainer agent(DockerImageName image,
+                                        String clusterId,
+                                        int nodeNumber,
+                                        int totalAgentNodes,
+                                        boolean leader) {
         final String aliasLeader = NodeType.AGENT_LEADER.alias(clusterId);
         final String alias = (leader)
                 ? aliasLeader
@@ -81,12 +84,14 @@ public class ArangoClusterContainer<SELF extends ArangoClusterContainer<SELF>> e
         final NodeType type = (leader)
                 ? NodeType.AGENT_LEADER
                 : NodeType.AGENT;
-        return new ArangoClusterContainer<>(image, type, alias)
+        return (ArangoClusterContainer) new ArangoClusterContainer(image, type, alias)
                 .withNetworkAliases(alias)
                 .withCommand(cmd.toArray(new String[0]));
     }
 
-    static ArangoClusterContainer<?> dbserver(DockerImageName image, String clusterId, int nodeNumber) {
+    static ArangoClusterContainer dbserver(DockerImageName image,
+                                           String clusterId,
+                                           int nodeNumber) {
         final String alias = NodeType.DBSERVER.alias(clusterId, nodeNumber);
         final String aliasLeader = NodeType.AGENT_LEADER.alias(clusterId);
 
@@ -103,12 +108,14 @@ public class ArangoClusterContainer<SELF extends ArangoClusterContainer<SELF>> e
         cmd.add("--cluster.agency-endpoint");
         cmd.add(getEndpoint(aliasLeader));
 
-        return new ArangoClusterContainer<>(image, NodeType.DBSERVER, alias)
+        return (ArangoClusterContainer) new ArangoClusterContainer(image, NodeType.DBSERVER, alias)
                 .withNetworkAliases(alias)
                 .withCommand(cmd.toArray(new String[0]));
     }
 
-    static ArangoClusterContainer<?> coordinator(DockerImageName image, String clusterId, int nodeNumber) {
+    static ArangoClusterContainer coordinator(DockerImageName image,
+                                              String clusterId,
+                                              int nodeNumber) {
         final String alias = NodeType.COORDINATOR.alias(clusterId, nodeNumber);
         final String aliasLeader = NodeType.AGENT_LEADER.alias(clusterId);
 
@@ -125,7 +132,7 @@ public class ArangoClusterContainer<SELF extends ArangoClusterContainer<SELF>> e
         cmd.add("--cluster.agency-endpoint");
         cmd.add(getEndpoint(aliasLeader));
 
-        return new ArangoClusterContainer<>(image, NodeType.COORDINATOR, alias)
+        return (ArangoClusterContainer) new ArangoClusterContainer(image, NodeType.COORDINATOR, alias)
                 .withNetworkAliases(alias)
                 .withCommand(cmd.toArray(new String[0]));
     }
@@ -143,17 +150,22 @@ public class ArangoClusterContainer<SELF extends ArangoClusterContainer<SELF>> e
     }
 
     @Override
-    public SELF withoutAuth() {
+    public ArangoClusterContainer withoutAuth() {
         final List<String> cmd = new ArrayList<>(Arrays.asList(this.getCommandParts()));
         cmd.add("--server.authentication=false");
         this.setCommand(cmd.toArray(new String[0]));
 
-        return super.withoutAuth();
+        return (ArangoClusterContainer) super.withoutAuth();
     }
 
     @Override
-    public SELF withPassword(String password) {
-        return super.withPassword(password);
+    public ArangoClusterContainer withPassword(String password) {
+        return (ArangoClusterContainer) super.withPassword(password);
+    }
+
+    @Override
+    public ArangoClusterContainer withRandomPassword() {
+        return (ArangoClusterContainer) super.withRandomPassword();
     }
 
     @Override

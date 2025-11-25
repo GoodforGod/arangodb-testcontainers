@@ -39,17 +39,17 @@ class ArangoClusterCustomTests extends ArangoRunner {
                     .anyMatch(c -> hostsAndPort.host().equals(c.getHost()) && hostsAndPort.port() == c.getPort()));
         }
 
-        final ArangoClusterContainer<?> agent1 = CLUSTER.getContainers().get(0);
-        final ArangoClusterContainer<?> agent2 = CLUSTER.getContainers().get(1);
-        final ArangoClusterContainer<?> agent3 = CLUSTER.getContainers().get(2);
+        final ArangoClusterContainer agent1 = CLUSTER.getContainers().get(0);
+        final ArangoClusterContainer agent2 = CLUSTER.getContainers().get(1);
+        final ArangoClusterContainer agent3 = CLUSTER.getContainers().get(2);
 
-        final ArangoClusterContainer<?> db1 = CLUSTER.getContainers().get(3);
-        final ArangoClusterContainer<?> db2 = CLUSTER.getContainers().get(4);
-        final ArangoClusterContainer<?> db3 = CLUSTER.getContainers().get(5);
+        final ArangoClusterContainer db1 = CLUSTER.getContainers().get(3);
+        final ArangoClusterContainer db2 = CLUSTER.getContainers().get(4);
+        final ArangoClusterContainer db3 = CLUSTER.getContainers().get(5);
 
-        final ArangoClusterContainer<?> coordinator1 = CLUSTER.getContainers().get(6);
-        final ArangoClusterContainer<?> coordinator2 = CLUSTER.getContainers().get(7);
-        final ArangoClusterContainer<?> coordinator3 = CLUSTER.getContainers().get(8);
+        final ArangoClusterContainer coordinator1 = CLUSTER.getContainers().get(6);
+        final ArangoClusterContainer coordinator2 = CLUSTER.getContainers().get(7);
+        final ArangoClusterContainer coordinator3 = CLUSTER.getContainers().get(8);
 
         assertEquals(ArangoClusterContainer.NodeType.AGENT_LEADER, agent1.getType());
         assertEquals(ArangoClusterContainer.NodeType.AGENT, agent2.getType());
@@ -65,7 +65,7 @@ class ArangoClusterCustomTests extends ArangoRunner {
         assertTrue(coordinator2.isRunning());
         assertTrue(coordinator3.isRunning());
 
-        for (ArangoContainer<?> coordinator : Arrays.asList(coordinator1, coordinator2, coordinator3)) {
+        for (ArangoContainer coordinator : Arrays.asList(coordinator1, coordinator2, coordinator3)) {
             var uri = getGetCheckURI(coordinator);
             HttpClient httpClient = HttpClient.newHttpClient();
             HttpResponse<String> response = httpClient.send(HttpRequest.newBuilder()
