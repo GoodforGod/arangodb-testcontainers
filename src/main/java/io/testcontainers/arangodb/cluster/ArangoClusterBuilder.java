@@ -5,7 +5,6 @@ import static io.testcontainers.arangodb.cluster.ArangoClusterContainer.NodeType
 import io.testcontainers.arangodb.cluster.ArangoClusterContainer.NodeType;
 import io.testcontainers.arangodb.containers.ArangoContainer;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jetbrains.annotations.Nullable;
 import org.testcontainers.containers.Network;
@@ -148,9 +147,9 @@ public class ArangoClusterBuilder {
             coordinators.add(coordinator);
         }
 
-        return Collections.unmodifiableList(Stream.of(agents, databases, coordinators)
+        return Stream.of(agents, databases, coordinators)
                 .flatMap(Collection::stream)
-                .map(c -> {
+                .peek(c -> {
                     if (network != null) {
                         c.withNetwork(network);
                     } else {
@@ -162,10 +161,8 @@ public class ArangoClusterBuilder {
                     } else {
                         c.withoutAuth();
                     }
-
-                    return c;
                 })
                 .sorted(Comparator.comparing(ArangoClusterContainer::getType))
-                .collect(Collectors.toList()));
+                .toList();
     }
 }

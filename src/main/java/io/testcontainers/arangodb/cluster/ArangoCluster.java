@@ -68,21 +68,21 @@ public class ArangoCluster implements Startable {
     private final String password;
 
     ArangoCluster(List<ArangoClusterContainer> containers, String password) {
-        this.coordinators = Collections.unmodifiableList(containers.stream()
+        this.coordinators = containers.stream()
                 .filter(c -> c.getType().equals(NodeType.COORDINATOR))
-                .collect(Collectors.toList()));
+                .toList();
 
-        this.agents = Collections.unmodifiableList(containers.stream()
+        this.agents = containers.stream()
                 .filter(c -> c.getType().equals(NodeType.AGENT))
-                .collect(Collectors.toList()));
+                .toList();
 
         this.agentLeader = containers.stream()
                 .filter(c -> c.getType().equals(NodeType.AGENT_LEADER))
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("Agent leader is not present!"));
 
-        this.databases = Collections.unmodifiableList(containers.stream()
+        this.databases = containers.stream()
                 .filter(c -> c.getType().equals(NodeType.DBSERVER))
-                .collect(Collectors.toList()));
+                .toList();
         this.password = password;
     }
 
