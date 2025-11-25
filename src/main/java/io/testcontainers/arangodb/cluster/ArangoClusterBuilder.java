@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jetbrains.annotations.Nullable;
 import org.testcontainers.containers.Network;
-import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 import org.testcontainers.utility.DockerImageName;
 
 /**
@@ -120,7 +119,7 @@ public class ArangoClusterBuilder {
         final List<ArangoClusterContainer> databases = new ArrayList<>(databaseNodes);
         final List<ArangoClusterContainer> coordinators = new ArrayList<>(coordinatorNodes);
 
-        final String clusterId = RandomStringUtils.randomAlphanumeric(8);
+        final String clusterId = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
 
         final ArangoClusterContainer leader = ArangoClusterContainer.agent(image, clusterId, 0, agentNodes, true);
         agents.add(leader);

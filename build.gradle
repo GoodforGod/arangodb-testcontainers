@@ -17,11 +17,11 @@ group = groupId
 var ver = System.getenv().getOrDefault("RELEASE_VERSION", artifactVersion)
 version = ver.startsWith("v") ? ver.substring(1) : ver
 
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 dependencies {
-    api "org.testcontainers:testcontainers:1.21.3"
+    api "org.testcontainers:testcontainers:2.0.2"
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.11.4"
     testRuntimeOnly "ch.qos.logback:logback-classic:1.5.18"
